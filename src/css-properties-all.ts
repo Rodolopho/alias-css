@@ -1,0 +1,2267 @@
+import config from './config.js';
+import compilers from './compilers.js';
+const style=['dotted:d','dashed:da:d2','solid:s','double:db:d3','groove:g','ridge:ri:r','inset:i','outset:o','none:n','hidden:h']; 
+    const width=['medium:m','thin:t','thick:th:t2'];
+    const mode=['normal:ml','multiply:m','screen:s','overlay:o','darken:d','lighten:l','color-dodge:cd','color-burn:cb','hard-light:hl',
+    'soft-light:sl','difference:di:d2','exclusion:e','hue:h','saturation:sa:s2','color:c','luminosity:lu:l2'];
+    const lenNumPer=(value:string)=>value.replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,'$1.$2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%").replace(/([a-z])([\d-])/g,'$1 $2');
+    const signedLenNumPer=(value:string)=>value.replace(/([\d])d([\d])/g,'$1.$2').replace(/([a-z])([\d-])/g,'$1 $2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%");
+    const lenByNumPer=(value:string)=>value.replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,'$1.$2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%").replace(/[\s]by[\s]/g,' / ');
+    const lenFitContent=(value:string)=>value.replace(/fit-content-([-]?\w+)/,'fit-content( $1 )').replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,' $1.$2 ').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%");
+
+
+const $c=compilers;
+
+
+type Property = {
+    alias:string,
+    type:string,
+    values:string[],
+    compiler:Function|string,
+
+}
+const cssProps:{
+    [key:string]:Property
+}={ 
+    //type:s=static,d=dynamic
+'accent-color':{
+    alias:'',
+    type:'d',
+    compiler:$c.color,
+    values:[],
+},
+'align-content':{
+    alias:'ac',
+    type:'s',
+    compiler:'',
+    values:['stretch:s','center:c','flex-start:fs','flex-end:fe','space-between:sb','space-around:sa','space-evenly:se'],
+},
+'align-items':{
+    alias:'ai',
+    type:'s',
+    compiler:'',
+    values:['normal:n','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
+},
+'align-self':{
+    alias:'as',
+    type:'s',
+    compiler:'',
+    values:['auto:a','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
+},
+'all':{//comes under global static definition
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:[],
+},
+'animation':{
+    alias:'a',
+    type:'d',
+    compiler:'',
+    values:[],
+},
+'animation-delay':{
+    alias:'adl',
+    type:'dynamic',
+    compiler:lenNumPer,
+    values:[],
+},
+'animation-direction':{
+    alias:'ad',
+    type:'s',
+    compiler:'',
+    values:['normal:n','reverse:r','alternate:a','alternate-reverse:ar'],
+},
+'animation-duration':{
+    alias:'adu',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'animation-fill-mode':{
+    alias:'afm',
+    type:'s',
+    compiler:'',
+    values:['none:n','forwards:f','backwards:b','both:bo:b2'],
+},
+'animation-iteration-count':{
+    alias:'aic',
+    type:'d',
+    compiler:$c.number,
+    values:['infinite:i'],
+},
+'animation-name':{
+    alias:'an',
+    type:'d',
+    compiler:$c.string,
+    values:['none:n'],
+},
+'animation-play-state':{
+    alias:'aps',
+    type:'s',
+    compiler:'',
+    values:['paused:p','running:r'],
+},
+'animation-timing-function':{
+    alias:'atf',
+    type:'d',
+    compiler:$c.timingFunction,
+    values:['linear:l','ease:e','ease-in:ei','ease-out:eo','ease-in-out:eio','step-start:ss','step-end:se'],
+},
+'aspect-ratio':{
+    alias:'ar',
+    type:'d',
+    compiler:(value:string)=>value.replace(/^-/,'').replace(/(-by-)/,'/').replace(/([\d])d([\d])/g,'$1.$2'),
+    values:[],
+},
+
+//----------B--------'
+'backdrop-filter':{
+    alias:'bf',
+    type:'d',
+    compiler:$c.filter,
+    values:['none:n'],
+},
+'backface-visibility':{
+    alias:'bv',
+    type:'s',
+    compiler:'',
+    values:['visible:v','hidden:h'],
+},
+'background':{
+    alias:'bg',
+    type:'d',
+    compiler:(value:string,custom:{})=>{
+        if(value.match(/^[-]?url/)){
+            return $c.url(value)
+        }else if(value.match(/[-]?(((repeating-)?(conic|linear|radial)-gradient)|(rrg|rg|lg|rcg|cg|rcg|rlg))([\w_-]+)/)){
+            return $c.gradient(value,custom)
+        }else{
+            return $c.color(value, custom)
+        }
+    },
+    values:[],
+},
+'background-attachment':{
+    alias:'bga',
+    type:'s',
+    compiler:'',
+    values:['scroll:s','fixed:f','local:l'],
+},
+'background-blend-mode':{
+    alias:'bgbm',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','multiply:m','screen:s','overlay:o','darken:d','lighten:l','color-dodge:cd','saturation:sa|s2','color:c','luminosity:lu:l2'],
+},
+'background-clip':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['border-box:bb','padding-box:pb','content-box:cb'],
+},
+'background-color':{
+    alias:'bgc',
+    type:'d',
+    compiler:$c.color,
+    values:['none:n'],
+},
+'background-image':{
+    alias:'bgi',
+    type:'d',
+    compiler:(value:string,custom:{})=>{
+        if(value.match(/^[-]?url/)){
+            return $c.url(value,)
+        }else if(value.match(/[-]?(((repeating-)?(conic|linear|radial)-gradient)|(rrg|rg|lg|rcg|cg|rcg|rlg))([\w_-]+)/)){
+            return $c.gradient(value,custom)
+        }else{
+            return null
+        }
+    },
+    values:['none:n'],
+},
+'background-origin':{
+    alias:'bgo',
+    type:'s',
+    compiler:'',
+    values:['padding-box:pb','border-box:bb','content-box:cb'],
+},
+'background-position':{
+    alias:'bgp',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'background-position-x':{
+    alias:'bgpx',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'background-position-y':{
+    alias:'bgpy',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'background-repeat':{
+    alias:'bgr',
+    type:'s',
+    compiler:'',
+    values:['repeat:r','repeat-x:rx','repeat-y:ry','no-repeat:nr'],
+},
+'background-size':{
+    alias:'bgs',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'block-size':{
+    alias:'',//border-spacing-bs
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'border':{
+    alias:'b',
+    type:'d',
+    compiler:$c.border,
+    values:['none:n'],
+},
+'border-block':{
+    alias:'',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'border-block-color':{
+    alias:'',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-block-end-color':{
+    alias:'bbec',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-block-end-style':{
+    alias:'bbes',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-block-end-width':{
+    alias:'bbew',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-block-start-color':{
+    alias:'bbsc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-block-start-style':{
+    alias:'bbss',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-block-start-width':{
+    alias:'bbsw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-block-style':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-block-width':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-bottom':{
+    alias:'bb',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'border-bottom-color':{
+    alias:'bbc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-bottom-left-radius':{
+    alias:'bblr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-bottom-right-radius':{
+    alias:'bbrr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-bottom-style':{
+    alias:'bbs',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-bottom-width':{
+    alias:'bbw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-collapse':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['separate:s','collapse:c'],
+},
+'border-color':{
+    alias:'bc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-end-end-radius':{
+    alias:'beer',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-end-start-radius':{
+    alias:'besr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-image':{ //--
+    alias:'',//taken by border-inline
+    type:'',
+    compiler:$c.url,
+    values:[''],
+},
+'border-image-outset':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-image-repeat':{
+    alias:'bir',
+    type:'s',
+    compiler:'',
+    values:['stretch:s','repeat:r','round:ro|r2','space:sp|s2'],
+},
+'border-image-slice':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-image-source':{
+    alias:'',
+    type:'',
+    compiler:$c.url,
+    values:['none:n'],
+},
+'border-image-width':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-inline':{
+    alias:'bi',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'border-inline-color':{ 
+    alias:'bic',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-inline-end-color':{
+    alias:'biec',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-inline-end-style':{
+    alias:'bies',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-inline-end-width':{
+    alias:'biew',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-inline-start-color':{
+    alias:'bisc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-inline-start-style':{
+    alias:'biss',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-inline-start-width':{
+    alias:'bisw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-inline-style':{
+    alias:'bis',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-inline-width':{
+    alias:'biw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-left':{
+    alias:'bl',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'border-left-color':{
+    alias:'blc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-left-style':{
+    alias:'bls',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-left-width':{
+    alias:'blw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-radius':{
+    alias:'br',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-right':{
+    alias:'brt',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-right-color':{
+    alias:'brc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-right-style':{
+    alias:'brs',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-right-width':{
+    alias:'brw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-spacing':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-start-end-radius':{
+    alias:'bser',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-start-star-radius':{
+    alias:'bssr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-style':{
+    alias:'bs',//------
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-top':{
+    alias:'bt',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'border-top-color':{
+    alias:'btc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'border-top-left-radius':{
+    alias:'btlr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-top-right-radius':{
+    alias:'btrr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'border-top-style':{
+    alias:'bts',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'border-top-width':{
+    alias:'btw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'border-width':{
+    alias:'bw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'bottom':{
+    alias:'btm',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'box-decoration-break':{
+    alias:'bdb',
+    type:'',
+    compiler:'',
+    values:['slice:s','clone:c'],
+},
+'box-reflect':{//--- gradient
+    alias:'bxr',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none:n','below:b','above:a','left:l','right:r'],
+},
+'box-shadow':{//--require -webkit-box-reflect
+    alias:'bxs',
+    type:'d',
+    compiler:$c.shadow, 
+    values:['none:n'],
+},
+'box-sizing':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['content-box:cb', 'border-box:bb'],
+},
+'break-after':{
+    alias:'ba',
+    type:'s',
+    compiler:'',
+    values:['auto:au','all','always:al','avoid:av','avoid-column:ac','avoid-page:ap','avoid-region:ar','column:c','left:l','page:p','recto:rec','region:reg','right:r','verso:v'],
+},
+'break-before':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['auto:au','all','always:al','avoid:av','avoid-column:ac','avoid-page:ap','avoid-region:ar','column:c','left:l','page:p','recto:rec','region:reg','right:r','verso:v'],
+},
+'break-inside':{
+    alias:'',//----
+    type:'s',
+    compiler:'',
+    values:['auto:au','all','always:al','avoid:av','avoid-column:ac','avoid-page:ap','avoid-region:ar','column:c','left:l','page:p','recto:rec','region:reg','right:r','verso:v'],
+},
+
+//----------C--------
+'caption-side':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['top:t','bottom:b'],
+},
+'caret-color':{
+    alias:'',//---
+    type:'d',
+    compiler:$c.color,
+    values:[],
+},
+'clear':{
+    alias:'cl',//--
+    type:'',
+    compiler:'',
+    values:['none:n','left:l','right:r','both:b'],
+},
+'clip-path':{
+    alias:'cp',
+    type:'d',
+    compiler:$c.clipPath,
+    values:['none:n'],
+},
+'color':{
+    alias:'c',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'column-count':{
+    alias:'cc',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'column-fill':{
+    alias:'cf',
+    type:'s',
+    compiler:'',
+    values:['auto:a','balance:b'],
+},
+'column-gap':{
+    alias:'cg',
+    type:'d',
+    compiler:lenNumPer,
+    values:['normal:n'],
+},
+'column-rule':{
+    alias:'cr',
+    type:'d',
+    compiler:$c.border,
+    values:[''],
+},
+'column-rule-color':{
+    alias:'crc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'column-rule-style':{
+    alias:'crs',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'column-rule-width':{
+    alias:'crw',
+    type:'d',
+    compiler:lenNumPer,
+    values:width,
+},
+'column-span':{
+    alias:'cs',
+    type:'s',
+    compiler:'',
+    values:['all:a','none:n'],
+},
+'column-width':{
+    alias:'cw',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'columns':{
+    alias:'cols',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'content':{
+    alias:'cont',
+    type:'d',
+    compiler:$c.content,
+    values:['normal:nl','none:n','open-quote:oq','close-quote:cq','no-open-quote:noq','no-close-quote:ncq'],
+},
+'counter-increment':{
+    alias:'ci',
+    type:'d',
+    compiler:(value:string)=>value.replace(/-([-]?[\d])$/,' $1'),
+    values:['none'],
+},
+'counter-reset':{
+    alias:'',
+    type:'d',
+    compiler:(value:string)=>value.replace(/-([-]?[\d])$/,' $1'),
+    values:['none:n'],
+},
+'cursor':{
+    alias:'cu',
+    type:'',
+    compiler:'',
+    values:['alias:al','all-scroll:as','auto:a','cell:c','col-resize:cr','context-menu:cm','copy:cp',
+  'crosshair:ch','default:d','e-resize:er', 'ew-resize:ewr','help:h','move:mo','n-resize:nr','ne-resize:ner','nesw-resize:neswr',
+  'no-drop:nd','none:n','not-allowed:na','ns-resize:nsr','nw-resize:nwr','nwse-resize:nwser',
+  'pointer:p','progress:pr','row-resize:rr','s-resize:sr','se-resize:ser','sw-resize:swr',
+  'text:t','vertical-text:vt','w-resize:wr','wait:w','zoom-in:zi','zoom-out:zo'],
+},
+ 
+//----------D--------
+'direction':{
+    alias:'dir',//--
+    type:'s',
+    compiler:'',
+    values:['ltr:l','rtl:r'],
+},
+'display':{
+    alias:'d',
+    type:'s',
+    compiler:'',
+    values:['block:b','compact:cp','container:c','flex:f','grid:g', 'inline:i','inline-block:ib',
+  'inline-flex:if','inline-grid:ig', 'inline-table:it',
+  'list-item:li','none:n','run-in:ri','table:t','table-caption:tcap','table-cell:tcl','table-column:tc',
+  'table-column-group:tcg','table-footer-group:tfg','table-header-group:thg','table-row:tr','table-row-group:trg'],
+},
+
+//----------E--------
+'empty-cells':{
+    alias:'ec',
+    type:'s',
+    compiler:'',
+    values:['hide:h','show:s'],
+},
+
+//----------F--------
+'filter':{
+    alias:'',
+    type:'d',
+    compiler:$c.filter,
+    values:['none:n'],
+},
+'flex':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'flex-basis':{
+    alias:'fb',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'flex-direction':{
+    alias:'fd',
+    type:'s',
+    compiler:'',
+    values:['row:r','row-reverse:rr','column:c','column-reverse:cr'],
+},
+'flex-flow':{//--incomplete
+    alias:'',
+    type:'d',
+    compiler:(value:string)=>value.replace(/[-](w|n)/," $1"),
+    values:[''],
+},
+'flex-grow':{
+    alias:'fg',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'flex-shrink':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'flex-wrap':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['nowrap:nw:n','wrap:w','wrap-reverse:wr'],
+},
+'float':{
+    alias:'f',//----
+    type:'s',
+    compiler:'',
+    values:['none:n','left:l','right:r',''],
+},
+// 'font':{//--
+//     alias:'',
+//     type:'d',
+//     compiler:'',
+//     values:[''],
+// },
+
+'font-family':{
+    alias:'ff',
+    type:'d',
+    compiler:$c.font,
+    values:[''],
+},
+'font-feature-settings':{
+    alias:'ffs',
+    type:'',
+    compiler:(value:string)=>value.replace(/--/g, ', ').replace(/(\w{4})/g, '"$1" ') .replace('-', ' '),
+    values:[''],
+    
+},
+'font-kerning':{
+    alias:'fk',
+    type:'s',
+    compiler:'',
+    values:['auto:a','normal:nl|n2','none:n'],
+},
+'font-language-override':{
+    alias:'flo',
+    type:'d',
+    compiler:(value:string)=>value.replace(/(\w+)/,'"$1"'),
+    values:['normal|nl'],
+},
+'font-size':{
+    alias:'fs',
+    type:'d',
+    compiler:lenNumPer,
+    values:['medium:m:md','xx-small:xxs','x-small:xs','small:sm:s','large:lg:l','x-large:xl','xx-large:xxl','smaller:smr','larger:lgr'],
+},
+'font-size-adjust':{
+    alias:'fsa',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none:n'],
+},
+'font-stretch':{
+    alias:'',//--
+    type:'s',
+    compiler:'',
+    values:['ultra-condensed:uc','extra-condensed:ec','condensed:c','semi-condensed:sc','normal:nl','semi-expanded:se','expanded:e','extra-expanded:ee','ultra-expanded:ue'],
+},
+'font-style':{
+    alias:'',//--
+    type:'s',
+    compiler:'',
+    values:['normal:nl','italic:i','oblique:o'],
+},
+'font-synthesis':{//--need work
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['none:n','weight:w',],
+},
+'font-variant':{
+    alias:'fv',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','small-caps:sc'],
+},
+'font-variant-alternates':{//--need work
+    alias:'fva',
+    type:'',
+    compiler:'',
+    values:[''],
+},
+'font-variant-caps':{
+    alias:'fvc',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','small-caps:sc','all-small-caps:asc','petite-caps:pc','all-petite-caps:apc','unicase:u','titling-caps:tc'],
+},
+'font-variant-east-asian':{//--
+    alias:'fvea',
+    type:'',
+    compiler:'',
+    values:[''],
+},
+'font-variant-ligatures':{
+    alias:'fvl',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','none:n','common-ligatures:cl','no-common-ligatures:ncl','discretionary-ligatures:dl','no-discretionary-ligatures:ndl','historical-ligatures:hl','no-historical-ligatures:nhl','contextual:c','no-contextual:nc'],
+},
+'font-variant-numeric':{
+    alias:'fvn',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','ordinal:o','slashed-zero:sz','lining-nums:ln', 'oldstyle-nums:on', 'proportional-nums:pn', 'tabular-nums:yn', 'diagonal-fractions:df', 'stacked-fractions:sf'],
+},
+
+'font-variant-position':{
+    alias:'fvp',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','sub:s','super:su:s2'],
+},
+'font-variant-emoji':{
+    alias:'fve',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','text:t','emoji:e','unicode:u'],
+},
+'font-weight':{
+    alias:'fw',
+    type:'s',
+    compiler:'',
+    values:['bolder:b2:blr','lighter:l:ltr','100:1','200:2','300:3','400:4:normal:nl','500:5','600:6','700:7:bold:b','800:8','900:9'],
+},
+
+//----------G--------
+'gap':{
+    alias:'g',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'grid':{
+    alias:'',
+    type:'d',
+    compiler:lenByNumPer,
+    values:[''],
+},
+'grid-area':{
+    alias:'ga',
+    type:'d',
+    compiler:lenByNumPer,
+    values:[''],
+},
+'grid-auto-columns':{
+    alias:'gac',
+    type:'d',
+    compiler:(value:string)=>{
+        // if(/^fit-content-/.test(value:string)){
+        //     return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") //fit-content-50px
+        // .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
+        // }
+        // if(/^minmax-/.text(value:string)){
+            return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
+            .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
+            .replace(/-([\d|a|a])/g,' $1')
+            .replace(/([\d])d([\d])/g,'$1.$2')
+            .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
+
+        //} 
+
+    },
+    values:['max-content:xc','min-content:mc','auto:a'],
+},
+'grid-auto-flow':{
+    alias:'gaf',
+    type:'s',
+    compiler:'',
+    values:['row:r','column:c','dense:d','row dense:row-dense:rd','column dense:column-dense:cd'],
+},
+'grid-auto-rows':{
+    alias:'gar',
+    type:'d',
+    compiler:(value:string)=>{
+        // if(/^fit-content-/.test(value:string)){
+        //     return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") //fit-content-50px
+        // .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
+        // }
+        // if(/^minmax-/.text(value:string)){
+            return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
+            .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
+            .replace(/-([\d|a|a])/g,' $1')
+            .replace(/([\d])d([\d])/g,'$1.$2')
+            .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
+
+        //} 
+
+    },
+    values:['max-content:xc','min-content:mc','auto:a'],
+},
+'grid-column':{
+    alias:'gc',
+    type:'d',
+    compiler:lenByNumPer,
+    values:[],
+},
+'grid-column-end':{
+    alias:'gce',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['auto'],
+},
+'grid-column-gap':{
+    alias:'gcg',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+},
+'grid-column-start':{
+    alias:'gcs',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'grid-gap':{
+    alias:'gg',
+    type:'d',
+    compiler:lenByNumPer,
+    values:[],
+},
+'grid-row':{
+    alias:'gr',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['auto:a','auto / auto:auto-auto'],
+},
+'grid-row-end':{
+    alias:'gre',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['auto:a'],
+},
+'grid-row-gap':{
+    alias:'grg',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+},
+'grid-row-start':{
+    alias:'grs',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['auto:a'],
+},
+'grid-template':{//----
+    alias:'gt',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['none:n'],
+},
+'grid-template-areas':{
+    alias:'gta',
+    type:'d',
+    compiler:(value:string)=>value.replace(/[-]?([\w]+)/g,"'$1' ").replace(/_/g," ").replace(/dot/g,'.'),
+    values:['none'],
+},
+'grid-template-columns':{//--repeat
+    alias:'gtc',
+    type:'d',
+    compiler:(value:string)=>{
+        return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
+            .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
+            .replace(/-([\d|a|a])/g,' $1')
+            .replace(/([\d])d([\d])/g,'$1.$2')
+            .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
+    },
+    values:['subgrid:sg:s','masonry:m'],
+},
+'grid-template-rows':{//--repeat
+    alias:'gtr',
+    type:'d',
+    compiler:(value:string)=>{
+        return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
+            .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
+            .replace(/-([\d|a|a])/g,' $1')
+            .replace(/([\d])d([\d])/g,'$1.$2')
+            .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
+    },
+    values:['subgrid:sg:s','masonry:m'],
+},
+
+//----------H--------
+'hanging-punctuation':{
+    alias:'hp',
+    type:'d',
+    compiler:(value:string)=>value.replace(/-e/g,'E').replace(/-/g,' ').replace(/E/g,'-e'),
+    values:['none:n','first:f','last:l','force-end:fe','allow-end:ae'],
+},
+'height':{
+    alias:'h',//--
+    type:'d',
+    compiler:lenFitContent,
+    values:['auto:a','max-content:xc','min-content:mc'],
+},
+'hyphens':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['auto:a','none:n','manual:m'],
+},
+
+//----------I--------
+'image-rendering':{
+    alias:'ir',
+    type:'s',
+    compiler:'',
+    values:['auto:a','crisp-edges:ce','pixelated:p'],
+},
+'image-orientation':{
+    alias:'io',
+    type:'s',
+    compiler:'',
+    values:['none:n','from-image:fi'],
+},
+'inline-size':{
+    alias:'is',
+    type:'d',
+    compiler:lenFitContent,
+    values:['auto:a','max-content:xc','min-content:mc'],
+},
+'inset':{
+    alias:'i',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-block':{
+    alias:'ib',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-block-end':{
+    alias:'ibe',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-block-start':{
+    alias:'ibs',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-inline':{
+    alias:'ii',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-inline-end':{
+    alias:'iie',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'inset-inline-start':{
+    alias:'iis',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a'],
+},
+'isolation':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['auto:a','isolate:i'],
+},
+
+//----------J--------
+'justify-content':{
+    alias:'jc',
+    type:'s',
+    compiler:'',
+    values:['flex-start:fs','flex-end:fe','center:c','space-around:sa','space-evenly:se','space-between:sb'],
+},
+'justify-items':{
+    alias:'ji',
+    type:'s',
+    compiler:'',
+    values:['legacy:le|l2','stretch:st|s2','start:s','left:l','center:c','end:e','right:r','flex-start:fs','flex-end:fe',
+    'normal:nl','baseline:b','first baseline:first-baseline:fb','last baseline:last-baseline:fl','self-start:ss','self-end:se',
+    'unsafe:us','safe center:safe-center:sc','unsafe center:unsafe-center:uc','legacy right:legacy-right:lr',
+    'legacy left:legacy-left:ll','legacy center:legacy-center:lc'],
+},
+'justify-self':{
+    alias:'js',
+    type:'s',
+    compiler:'',
+    values:['auto:a','normal:nl','stretch:st:s2','center:c','start:s','end:e','flex-start:fs','flex-end:fe',
+    'self-start:ss','self-end:se','left:l','right:r','baseline:b','first baseline:first-baseline:fb','last baseline:last-baseline:lb',
+    'safe center:safe-center:sc','unsafe center:unsafe-center:uc'],
+},
+
+//----------K--------
+
+
+//----------L--------
+'left':{
+    alias:'l',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'letter-spacing':{
+    alias:'les',
+    type:'d',
+    compiler:lenNumPer,
+    values:['normal:nl'],
+},
+'line-break':{
+    alias:'lb',
+    type:'s',
+    compiler:'',
+    values:['auto:a','loose:l','normal:nl','strict:s','anywhere:aw:a2'],
+},
+'line-height':{
+    alias:'lh',
+    type:'d',
+    compiler:lenNumPer,
+    values:['normal:nl'],
+},
+'list-style':{
+    alias:'ls',//--
+    type:'',
+    compiler:'',
+    values:['armenian:a:ar','circle:c','cjk-ideographic:ci','hebrew:h','hiragana:hira:h2','hiragana-iroha:hi','katakana:k',
+  'katakana-iroha:ki','decimal:d','decimal-leading-zero:dlz','disc:di:d2','georgian:g','lower-alpha:la',
+  'lower-greek:lg','lower-latin:ll','lower-roman:lr','none:n','square:s','upper-alpha:ua','upper-latin:ul'],
+},
+'list-style-image':{
+    alias:'lsi',
+    type:'d',
+    compiler:$c.url,
+    values:['none:n'],
+},
+'list-style-position':{
+    alias:'lsp',
+    type:'s',
+    compiler:'',
+    values:['inside:i','outside:o'],
+},
+'list-style-type':{
+    alias:'lst',
+    type:'s',
+    compiler:'',
+    values:['armenian:a:ar','circle:c','cjk-ideographic:ci','hebrew:h','hiragana:hira:h2','hiragana-iroha:hi','katakana:k',
+  'katakana-iroha:ki','decimal:d','decimal-leading-zero:dlz','disc:di:d2','georgian:g','lower-alpha:la',
+  'lower-greek:lg','lower-latin:ll','lower-roman:lr','none:n','square:s','upper-alpha:ua','upper-latin:ul',],
+},
+
+//----------M--------
+'margin':{
+    alias:'m',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[],
+},
+'margin-block':{
+    alias:'',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-block-end':{
+    alias:'mbe',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-block-start':{
+    alias:'mbs',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-bottom':{
+    alias:'mb',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-inline':{
+    alias:'mi',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-inline-end':{
+    alias:'mie',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-inline-start':{
+    alias:'mis',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-left':{
+    alias:'ml',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-right':{
+    alias:'mr',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'margin-top':{
+    alias:'mt',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'mask':{
+    alias:'',//--
+    type:'',
+    compiler:'',
+    values:['none:n'],
+},
+'mask-clip':{
+    alias:'',
+    type:'',
+    compiler:'',
+    values:['no-clip:nc','content-box:cb','padding-box:pb','border-box:bb','fill-box:fb','stroke-box:sb','view-box:vb'],
+},
+'mask-composite':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['add:a','subtract:s','intersect:i','exclude:e'],
+},
+'mask-image':{
+    alias:'',
+    type:'d',
+    compiler:(value:string,custom:{})=>{
+        if(value.match(/^[-]?url/)){
+            return $c.url(value)
+        }else if(value.match(/[-]?(((repeating-)?(conic|linear|radial)-gradient)|(rrg|rg|lg|rcg|cg|rcg|rlg))([\w_-]+)/)){
+            return $c.gradient(value,custom)
+        }else{
+            return null
+        }
+    },
+    values:[''],
+},
+'mask-mode':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['alpha:a','luminance:l','match-source:ms'],
+},
+'mask-origin':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['content-box:cb','padding-box:pb','border-box:bb','fill-box:fb','stroke-box:sb','view-box:vb'],
+},
+'mask-position':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['top:t','right:r','bottom:b','left:l','center:c'],
+},
+'mask-repeat':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['repeat-x:rx','repeat-y:ry','repeat:r','space:r','round:ro:r2','no-repeat:nr'],
+},
+'mask-size':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['cover:c','contain:con:c2','auto:a'],
+},
+'mask-type':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['alpha:a','luminance:l'],
+},
+'max-height':{
+    alias:'xh',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n','fit-content:fc'],
+},
+'max-width':{
+    alias:'xw',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n','fit-content:fc'],
+},
+'max-block-size':{
+    alias:'xbs',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n'],
+},
+'max-inline-size':{
+    alias:'',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n'],
+},
+'min-block-size':{
+    alias:'',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n'],
+},
+'min-inline-size':{
+    alias:'',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n'],
+},
+'min-height':{
+    alias:'mh',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n','fit-content:fc'],
+},
+'min-width':{
+    alias:'mw',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','none:n','fit-content:fc'],
+},
+'mix-blend-mode':{
+    alias:'mbm',
+    type:'s',
+    compiler:'',
+    values:mode,
+},
+
+//----------O--------
+'object-fit':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['contain:c','cover:co:c2','fill:f','none:n','scale-down:sd'],
+},
+'object-position':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['top:t','left:l','center:c','bottom:b','right:r'],
+},
+'offset':{//--
+    alias:'',
+    type:'',
+    compiler:'',
+    values:[''],
+},
+'offset-anchor':{
+    alias:'ofa',
+    type:'d',
+    compiler:lenNumPer,
+    values:['top:t','left:l','center:c','bottom:b','right:r','auto:a'],
+},
+'offset-distance':{
+    alias:'ofd',
+    type:'s',
+    compiler:lenNumPer,
+    values:[''],
+},
+'offset-path':{
+    alias:'ofp',
+    type:'d',
+    compiler:$c.clipPath,
+    values:[''],
+},
+'offset-rotate':{
+    alias:'ofr',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a','reverse:r'],
+},
+'opacity':{
+    alias:'o',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'order':{
+    alias:'ord',
+    type:'s',
+    compiler:lenNumPer,
+    values:[''],
+},
+'orphans':{
+    alias:'orp',
+    type:'s',
+    compiler:lenNumPer,
+    values:[''],
+},
+'outline':{
+    alias:'ol',
+    type:'s',
+    compiler:$c.border,
+    values:['none:n','auto:a'],
+},
+'outline-color':{
+    alias:'olc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'outline-offset':{
+    alias:'olo',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'outline-style':{
+    alias:'ols',
+    type:'s',
+    compiler:'',
+    values:style,
+},
+'outline-width':{
+    alias:'olw',
+    type:'d',
+    compiler:lenByNumPer,
+    values:[''],
+},
+'overflow':{
+    alias:'of',
+    type:'s',
+    compiler:'',
+    values:['visible:v','hidden:h','clip:c','scroll:s','auto:a',],
+},
+'overflow-anchor':{
+    alias:'oa',
+    type:'s',
+    compiler:'',
+    values:['auto:a','none:n'],
+},
+'overflow-wrap':{
+    alias:'ow',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','break-word:bw','anywhere:a:aw'],
+},
+'overflow-x':{
+    alias:'ox',
+    type:'s',
+    compiler:'',
+    values:['visible:v','hidden:h','clip:c','scroll:s','auto:a',],
+},
+'overflow-y':{
+    alias:'oy',
+    type:'s',
+    compiler:'',
+    values:['visible:v','hidden:h','clip:c','scroll:s','auto:a',],
+},
+'overscroll-behavior':{
+    alias:'ob',
+    type:'s',
+    compiler:'',
+    values:['auto:a','contain:c','none:n'],
+},
+'overscroll-behavior-block':{
+    alias:'obb',
+    type:'s',
+    compiler:'',
+    values:['auto:a','contain:c','none:n'],
+},
+'overscroll-behavior-inline':{
+    alias:'obi',
+    type:'s',
+    compiler:'',
+    values:['auto:a','contain:c','none:n'],
+},
+'overscroll-behavior-x':{
+    alias:'obx',
+    type:'s',
+    compiler:'',
+    values:['auto:a','contain:c','none:n'],
+},
+'overscroll-behavior-y':{
+    alias:'oby',
+    type:'s',
+    compiler:'',
+    values:['auto:a','contain:c','none:n'],
+},
+
+//----------P--------
+'padding':{
+    alias:'p',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-block':{
+    alias:'',
+    type:'s',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-block-end':{
+    alias:'pbe',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-block-start':{
+    alias:'pbs',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-bottom':{
+    alias:'pb',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-inline':{
+    alias:'pi',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-inline-end':{
+    alias:'pie',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-inline-start':{
+    alias:'pis',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-left':{
+    alias:'pl',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-right':{
+    alias:'pr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'padding-top':{
+    alias:'pt',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'page-break-after':{
+    alias:'pba',
+    type:'s',
+    compiler:'',
+    values:['auto:a','always:al:a3','avoid:av:a2','left:l','right:r','recto:rc:r2','verso:v'],
+},
+'page-break-before':{
+    alias:'pbb',
+    type:'s',
+    compiler:'',
+    values:['auto:a','always:al:a3','avoid:av:a2','left:l','right:r','recto:rc:r2','verso:v'],
+},
+'page-break-inside':{
+    alias:'pbi',
+    type:'s',
+    compiler:'',
+    values:['auto:a','avoid:av:a2'],
+},
+'paint-order':{//--
+    alias:'po',
+    type:'s',
+    compiler:'',
+    values:['fill:f','stroke:s','markers:m','normal:nl'],
+},
+'perspective':{
+    alias:'pers',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none:n'],
+},
+'perspective-origin':{
+    alias:'perso',
+    type:'s',
+    compiler:lenNumPer,
+    values:[''],
+},
+'place-content':{
+    alias:'pc',
+    type:'d',
+    compiler:(value:string)=>{
+        const m=/[-]?(start|end|flex-start|flex-end|center|left|right|space-between|baseline|first|last|space-evenly|space-around|stretch|safe|unsafe)/g;
+        return value.replace(m," $1")
+    },
+    values:[''],
+},
+'place-items':{
+    alias:'',
+    type:'d',
+    compiler:(value:string)=>{
+        const m=/[-]?(start|end|flex-start|flex-end|self-start|self-end|normal|center|baseline|first|last|auto|right|left|legacy|stretch|safe|unsafe)/g;
+        return value.replace(m," $1")
+    },
+    values:[''],
+},
+'place-self':{
+    alias:'ps',
+    type:'d',
+     compiler:(value:string)=>{
+        const m=/[-]?(start|end|flex-start|flex-end|self-start|self-end|normal|center|baseline|first|last|auto|right|left|legacy|stretch|safe|unsafe)/g;
+        return value.replace(m," $1")
+    },
+    values:[''],
+},
+'pointer-events':{
+    alias:'pe',
+    type:'s',
+    compiler:'',
+    values:['auto:a','none:n','visiblePainted:vp','visibleFill:vf','visibleStroke:vs','visible:v','painted:p','fill:f','stroke:s','all']
+},
+'position':{
+    alias:'pos',
+    type:'s',
+    compiler:'',
+    values:['static:st:s2','absolute:a','fixed:f','relative:r','sticky:s'],
+},
+
+//----------Q--------
+'quotes':{//--
+    alias:'q',
+    type:'',
+    compiler:'',
+    values:[''],
+},
+
+//----------R--------
+'resize':{
+    alias:'rs',
+    type:'s',
+    compiler:'',
+    values:['none:n','both:b','horizontal:h','vertical:v'],
+},
+'right':{
+    alias:'r',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'rotate':{
+    alias:'rt',
+    type:'d',
+    compiler:lenByNumPer,
+    values:['none:n'],
+},
+'row-gap':{
+    alias:'rg',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+
+//----------S--------
+'scale':{
+    alias:'s',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none:n'],
+},
+'scroll-behavior':{
+    alias:'sb',
+    type:'s',
+    compiler:'',
+    values:['auto:a','smooth:s'],
+},
+'scroll-margin':{
+    alias:'sm',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-block':{
+    alias:'',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-block-end':{
+    alias:'smbe',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-block-start':{
+    alias:'smbs',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-bottom':{
+    alias:'smb',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-inline':{
+    alias:'smi',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-inline-end':{
+    alias:'smie',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-inline-start':{
+    alias:'smis',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-left':{
+    alias:'sml',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-right':{
+    alias:'smr',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-margin-top':{
+    alias:'smt',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:[''],
+},
+'scroll-padding':{
+    alias:'sp',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-block':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-block-end':{
+    alias:'spbe',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-block-start':{
+    alias:'spbs',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-bottom':{
+    alias:'spb',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-inline':{
+    alias:'spi',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-inline-end':{
+    alias:'spie',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-inline-start':{
+    alias:'spis',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-left':{
+    alias:'spl',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-right':{
+    alias:'spr',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-padding-top':{
+    alias:'spt',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'scroll-snap-align':{
+    alias:'ssa',
+    type:'s',
+    compiler:'',
+    values:['start:s','end:e','center:c'],
+},
+'scroll-snap-stop':{
+    alias:'sss',
+    type:'s',
+    compiler:'',
+    values:['always:al:a','normal:nl'],
+},
+'scroll-snap-type':{
+    alias:'sst',
+    type:'s',
+    compiler:'',
+    values:['x','y','block:b','inline:i','both:bo:b2'],
+},
+'scrollbar-color':{
+    alias:'sc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+
+//----------T--------
+'tab-size':{
+    alias:'ts',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'table-layout':{
+    alias:'tl',
+    type:'s',
+    compiler:'',
+    values:['auto:a','fixed:f'],
+},
+'text-align':{
+    alias:'ta',
+    type:'s',
+    compiler:'',
+    values:['auto:a','left:l','right:r','center:c','justify:j','end:e','start:s'],
+},
+'text-align-last':{
+    alias:'tal',
+    type:'s',
+    compiler:'',
+    values:['auto:a','left:l','right:r','center:c','justify:j','end:e','start:s'],
+},
+'text-combine-upright':{
+    alias:'',
+    type:'',
+    compiler:'',
+    values:[''],
+},
+'text-decoration':{
+    alias:'td',
+    type:'s',
+    compiler:'',
+    values:[...style,'underline:u','overline:ol:o2','line-through:lt'],
+},
+'text-decoration-color':{
+    alias:'tdc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'text-decoration-line':{
+    alias:'tdln',
+    type:'',
+    compiler:'',
+    values:['none:n','underline:u','overline:o','line-through:lt'],
+},
+'text-decoration-style':{
+    alias:'tds',
+    type:'',
+    compiler:'',
+    values:[...style,'wavy:w'],
+},
+'text-decoration-thickness':{
+    alias:'tdt',
+    type:'d',
+    compiler:lenNumPer,
+    values:['auto:a','from-font:ff'],
+},
+'text-emphasis':{
+    alias:'te',
+    type:'s',
+    compiler:'',
+    values:['none:n','open:o','filled:f','dot:d','circle:c','double-circle:dc','triangle:t','sesame'],
+},
+'text-indent':{
+    alias:'ti',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'text-justify':{
+    alias:'tj',
+    type:'s',
+    compiler:'',
+    values:['none:n','inter-word:iw','inter-character:ic','distribute:d','auto:a'],
+},
+'text-orientation':{
+    alias:'',//--
+    type:'',
+    compiler:'',
+    values:['mixed:m','upright:u','sideways:s','sideways-right:sr','use-glyph-orientation:ugo'],
+},
+'text-overflow':{
+    alias:'to',
+    type:'s',
+    compiler:'',
+    values:['clip:c','ellipsis:e',''],
+},
+'text-shadow':{
+    alias:'txs',
+    type:'d',
+    compiler:$c.shadow,
+    values:[''],
+},
+'text-transform':{
+    alias:'tt',
+    type:'s',
+    compiler:'',
+    values:['none:n','capitalize:c','uppercase:u:uc','lowercase:l:lc','full-width:fw','full-size-kana:fsk'],
+},
+'text-underline-position':{
+    alias:'tup',
+    type:'s',
+    compiler:'',
+    values:['auto:a','under:u','left:l','right:r'],
+},
+'top':{
+    alias:'t',
+    type:'d',
+    compiler:signedLenNumPer,
+    values:['auto:a'],
+},
+'transform':{
+    alias:'tf',
+    type:'d',
+    compiler:$c.transform,
+    values:[''],
+},
+'transform-box':{
+    alias:'tfb',
+    type:'s',
+    compiler:'',
+    values:['content-box:cb','border-box:bb','fill-box:fb','stroke-box:sb','view-box:vb'],
+},
+'transform-origin':{
+    alias:'tfo',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'transform-style':{
+    alias:'tfs',
+    type:'s',
+    compiler:'',
+    values:['flat:f','preserve-3d:p:p3:p3d'],
+},
+'transition':{
+    alias:'tn',
+    type:'d',
+    compiler:$c.transition,
+    values:[''],
+},
+'transition-delay':{
+    alias:'tdl',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'transition-duration':{
+    alias:'tdu',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'transition-property':{
+    alias:'tp',
+    type:'d',
+    compiler:(value:string)=>value.replace(/_/g, " , "),
+    values:[''],
+},
+'transition-timing-function':{
+    alias:'ttf',
+    type:'d',
+    compiler:$c.timingFunction,
+    values:[''],
+},
+'translate':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none:n'],
+},
+
+//----------U--------
+'unicode-bidi':{
+    alias:'ub',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','embed:e','isolate:i','bidi-override:bo','isolate-override:io','plaintext:p|pt'],
+},
+'user-select':{
+    alias:'us',
+    type:'s',
+    compiler:'',
+    values:['none:n','auto:a','text:t','contain:c','all'],
+
+},
+
+//----------V--------
+'vertical-align':{
+    alias:'va',
+    type:'d',
+    compiler:lenNumPer,
+    values:['baseline:bl:b2','sub:s','super:su:s2','text-top:tt','text-bottom:tb','middle:m','top:t','bottom:b'],
+},
+'visibility':{
+    alias:'v',
+    type:'s',
+    compiler:'',
+    values:['visible:v','hidden:h','collapse:c'],
+},
+
+//----------W--------
+'white-space':{
+    alias:'ws',
+    type:'s',
+    compiler:'',
+    values:['normal:nl','nowrap:nw','pre:p','pre-line:pl','pre-wrap:pw','break-spaces:bs'],
+},
+'widows':{
+    alias:'win',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
+'width':{
+    alias:'w',
+    type:'d',
+    compiler:lenFitContent,
+    values:['max-content:xc','min-content:mc','auto:a','fit-content:fc'],
+},
+'will-change':{
+    alias:'wc',//--
+    type:'s',
+    compiler:'',
+    values:['auto:a','scroll-position:sc','contents:c','transform:tf','opacity:o','left:l','top:t'],
+},
+'word-break':{
+    alias:'wb',
+    type:'',
+    compiler:'',
+    values:['break-all:ba','keep-all:ka','break-word:bw','normal:nl'],
+},
+'word-spacing':{
+    alias:'wos',
+    type:'d',
+    compiler:lenNumPer,
+    values:['normal:nl'],
+},
+'word-wrap':{
+    alias:'ww',
+    type:'s',
+    compiler:'',
+    values:['break-word:bw','normal:nl'],
+},
+'writing-mode':{
+    alias:'wm',
+    type:'s',
+    compiler:'',
+    values:['horizontal-tb:ht','vertical-rl:vrl','vertical-lr:vlr'],
+},
+
+//----------Z--------
+'z-index':{
+    alias:'zi',
+    type:'d',
+    compiler:(value:string)=>value,
+    values:['auto:a'],
+},
+
+//----------------SVG---
+// 'alignment-baseline':{
+//     alias:'',
+//     type:'',
+//     compiler:'',
+//     value:['']
+// },
+'alignment-baseline':{
+    alias:'ab',
+    type:'s',
+    compiler:'',
+    values:['auto','baseline','before-edge','text-before-edge',
+    'middle','central','after-edge','text-after-edge','ideographic','alphabetic',
+    'hanging','mathematical','top','center','bottom']
+},
+'stroke':{
+    alias:'str',
+    type:'d',
+    compiler:$c.color,
+    values:[],
+},
+'fill':{
+    alias:'',
+    type:'d',
+    compiler:$c.color,
+    values:[],
+},
+'stroke-width':{
+    alias:'sw',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+},
+'stroke-opacity':{
+    alias:'so',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+},
+'stroke-linecap':{
+    alias:'slc',
+    type:'s',
+    compiler:'',
+    values:['butt','round','square'],
+},
+'stroke-linejoin':{
+    alias:'slj',
+    type:'s',
+    compiler:'',
+    values:['arcs','bevel','iter','miter-clip','round'],
+},
+
+
+}
+
+export default cssProps
