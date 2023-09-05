@@ -32,6 +32,7 @@ export const compiler:{[key:string]:any}={
             media=mediaSelector.target[mediaProperty];
             workingClassName=className.replace(mediaProperty,'');
         }
+        
         //process --important flag
         if(/(-i|--important)$/.test(className)){
             important=' !important';
@@ -42,10 +43,20 @@ export const compiler:{[key:string]:any}={
         workingClassName=pseudoAndElementResult[1];
         elementAndPseudo=pseudoAndElementResult[0];
         //---------------------------------------------------------------------
+        
         const pnv=workingClassName.replace(/^-/,'');
         let result :any ='';
-
-        if(this.cache.propertyAndValue.hasOwnProperty(pnv)){
+        //x-class
+         if(/^(x-width|x-height)/.test(workingClassName)){
+            const extract=getPropertyAndValue(pnv.replace('x-',''), this.cssProps, this.staticClassNames, this.custom);
+            if(typeof extract === 'string'){
+                const [p,v]=extract.split(':');
+                if(p && v){
+                    result=`${p}:calc(${v} + var(--${p}-grow) - var(--${p}-shrink));--${p}:${v};--${p}-grow:0px;--${p}-shrink:0px`
+                }
+            }
+         
+        }else if(this.cache.propertyAndValue.hasOwnProperty(pnv)){
             result=this.cache.propertyAndValue[pnv];
         }else{
             result=getPropertyAndValue(pnv, this.cssProps, this.staticClassNames, this.custom);

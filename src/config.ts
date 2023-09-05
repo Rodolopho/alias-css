@@ -48,6 +48,12 @@ targets:{
   '--focus': ':focus', // -fo
   '-fo': ':focus', // -fo
 
+   '--focus-within': ':focus-within', // -fo
+  '-fw': ':focus-within', // -fo
+
+   '--focus-visible': ':focus-visible', // -fo
+  '-fv': ':focus-visible', // -fo
+
   '--hover': ':hover', // -h
   '-h': ':hover', // -h
 

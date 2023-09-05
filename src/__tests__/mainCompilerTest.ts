@@ -13,6 +13,7 @@ test('MainCompiler compiler.extend)', () => {
     compiler.extend("bgc-one","background-color:blue")
   expect(compiler.make('-nc-2-bgc-one-i')).toEqual('.-nc-2-bgc-one-i:nth-child(2){background-color:blue !important}');
 });
+
 // test('Group For JS',()=>{
 //   expect(compiler.groupForJs('df f1 fw-4')).toBe({});
 // })

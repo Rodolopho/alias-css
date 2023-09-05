@@ -3,6 +3,7 @@ import { compiler } from "./mainCompiler.js"
 
 export const main=compiler;
 
-export const styleJSX=(str:string)=>compiler.groupForJs(str);
+export const styleJSX=(str:string,bool?:boolean)=>compiler.groupForJs(str,bool);
+// export const style=()=>{};
 export const staticClassNames=compiler.staticClassNames;
-export const extend=compiler.extend;
+export const extend=(object:{})=>compiler.extend(object);

@@ -1,5 +1,5 @@
 import config from '../config.js'
-  const fullFlagsMatch=/^--(after-hover|after|before-hover|before|checked|default|disabled|empty|enabled|first-child|first-letter|first-line|first-of-type|focus|hover-after|hover-before|hover-target|hover|in-range|indeterminate|invalid|lang-|last-child|last-of-type|link|only-child|only-of-type|optional|out-of-range|placeholder|read-only|read-write|required|scrollbar-thumb|scrollbar-track|scrollbar|selection|target|valid|visited|web-kit-scrollbar-thumb|webkit-scrollbar-track|webkit-scrollbar|active)(?=[-|_])/ 
+  const fullFlagsMatch=/^--(after-hover|after|before-hover|before|checked|default|disabled|empty|enabled|first-child|first-letter|first-line|first-of-type|focus-within|focus-visible|focus|hover-after|hover-before|hover-target|hover|in-range|indeterminate|invalid|lang-|last-child|last-of-type|link|only-child|only-of-type|optional|out-of-range|placeholder|read-only|read-write|required|scrollbar-thumb|scrollbar-track|scrollbar|selection|target|valid|visited|web-kit-scrollbar-thumb|webkit-scrollbar-track|webkit-scrollbar|active)(?=[-|_])/ 
   
 
 
@@ -25,7 +25,7 @@ const matchAndCall: { [key: string]: { match: RegExp; callFunction: any } } = {
   },
   pseudoShort: {
     match:
-      /^(-(a|af|sb|stm|st|afh|bf|bfh|ch|de|di|em|en|fc|fl|fln|fot|fo|h|haf|abf|htg|ir|ind|inv|lc|lot|ln|oot|oc|oor|ph|ro|rw|r|rt|s|tg|v|vi))(?=[-|_])/,
+      /^(-(a|af|sb|stm|st|afh|bf|bfh|ch|de|di|em|en|fc|fl|fln|fot|fo|fv|fw|h|haf|abf|htg|ir|ind|inv|lc|lot|ln|oot|oc|oor|ph|ro|rw|r|rt|s|tg|v|vi))(?=[-|_])/,
     callFunction: pseudoShort,
   },
 };

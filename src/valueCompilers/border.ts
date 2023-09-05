@@ -2,8 +2,8 @@ import color from './color.js';
 import length from './lengthUnsigned.js';
 export default function border(data: string, custom: { [key: string]: { [key: string]: string } }) {
   const [l, s, c] = data.replace(/^-/,'').split('-');
-  const col = color(c, custom);
-  const sty = style.hasOwnProperty(s) ? style[s] : '';
+  const col = c?color(c, custom):'';
+  const sty = s?style.hasOwnProperty(s) ? style[s] : '':'';
 
   const len = length(l, custom); // .replace(/d/,".");
 

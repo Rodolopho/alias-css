@@ -15,6 +15,7 @@ const $c=compilers;
 
 type Property = {
     alias:string,
+    property?: string,
     type:string,
     values:string[],
     compiler:Function|string,
@@ -24,6 +25,36 @@ const cssProps:{
     [key:string]:Property
 }={ 
     //type:s=static,d=dynamic
+   //-----------------xc----------------
+'width-grow':{
+    alias:'',
+    property:'--width-grow',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+}, 
+'width-shrink':{
+    alias:'',
+    property:'--width-shrink',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+}, 
+'height-grow':{
+    alias:'',
+    property:'--height-grow',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+}, 
+'height-shrink':{
+    alias:'',
+    property:'--height-shrink',
+    type:'d',
+    compiler:lenNumPer,
+    values:[],
+}, 
+// ----------xc-end
 'accent-color':{
     alias:'',
     type:'d',
