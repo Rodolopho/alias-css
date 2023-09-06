@@ -46,6 +46,7 @@ export let classPrinter: ClassPrinter = {
     // initialize class or acss-class value conatiner
     let attrValue = '';
     const testRegExp=this.useColon? /class[-_:]/: /class[-_]/;
+    const testRegExpKF=this.useColon? /keyframes[-_:]/: /keyframes[-_]/;
 
     // if class
     if (el.getAttribute('class')) attrValue += ' ' + el.getAttribute('class');
@@ -59,6 +60,17 @@ export let classPrinter: ClassPrinter = {
                   this.appendToStyleTag(result);
                 //  return true;
               }
+           }  
+           if( testRegExpKF.test(each.name)){
+            const key=each.name.replace(testRegExpKF,'');
+              let kfStatement='@keyframes '+ key +"{\n";
+              const split=each.value.split(/\s+/);
+              split.forEach((each:string) => {
+                const[at,pNv]=each.replace("-","=").split("=");
+                const result=statementMaker.make(pNv,null,true);
+                kfStatement+=` ${at.replace('@','')}% {${result?result:''}}`
+              });
+               this.appendToStyleTag(kfStatement+ "\n}");
            }  
              
         })

@@ -95,10 +95,14 @@ const AliasCSS: Index = {
   matchRegExp:/(?:(class|className|class[-_][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
   matchRegExpWithColon:/(?:(class|className|class[-_:][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
 
+  matchRegExpKeyFrame:/(?:(keyframes[-_][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColonKeyFrame:/(?:(keyframes[-_:][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+
   // it will hold all the class name list that had been already compiled
   classList: [],
   // it hold he group and their classnames
   groups: {},
+  keyframe:{},
   // compiles and return statement i.e .class{property:value}
   statementMaker,
   // initialized input and out put
@@ -109,11 +113,13 @@ const AliasCSS: Index = {
    const data = fs.readFileSync(file, 'utf-8');
         const classList:string[] = [];
         const groups :{[key:string]:any}= {};
+        let keyframe:{[key:string]:any}= {};
         const matchRegExp=this.useColon?this.matchRegExpWithColon:this.matchRegExp;
+        const matchRegExpKeyFrame=this.useColon?this.matchRegExpWithColonKeyFrame:this.matchRegExpKeyFrame;
        
-        // step 1: find class="" acss-group=""
+        // step 1: find class=""
        const matches= data.match(new RegExp(matchRegExp,"g"));
-            if(matches===null)return [[], {}]
+          if(matches!==null){
             
         matches.forEach((match) => {
             const extraction = match.match(matchRegExp);
@@ -142,16 +148,43 @@ const AliasCSS: Index = {
                             });
                     }
                 })
+              }
+                ///---------keyframes
+              const matchesKF= data.match(new RegExp(matchRegExpKeyFrame,"g"));
+            if(matchesKF===null)return [classList, groups,keyframe]
+            
+        matchesKF.forEach((match) => {
+            const extraction = match.match(matchRegExpKeyFrame);
+            if(!extraction) return;
+
+            // case one if its just class-group
+            if(extraction[1].match(/keyframes[:_-]/)){
+                const name=extraction[1].replace(/keyframes[:_-]/,'');
+                if (name) {
+                    // if name already exists
+                    // if (names.hasOwnProperty(name) && names[name] === extraction[2]) {
+                    if (keyframe.hasOwnProperty(name)){
+                       keyframe[name] = keyframe[name] +" "+ extraction[2];
+                    }
+                    else {
+                        // new name
+                        keyframe[name] = extraction[2].trim().replace(/[\s]+/," ");
+                          }
+
+                  }
+                  }
+                })
+                ///--------end-of-keyframes
             
             
-        return [classList, groups];
+        return [classList, groups,keyframe];
   },
   // --------------Main----------------------
   // compiles given file and return css statement
   compile(file: File) {
     let compileStatement = '';
     let globalStatement = '';
-    const [classList, groups] = this.extractClassName(file);
+    const [classList, groups,keyframe] = this.extractClassName(file);
 
     if (classList.length) {
       //  compileStatement=`\n/* AliasCSS : These are classnames compiled  from ${path.basename(file)}*/\n\n`,
@@ -177,6 +210,23 @@ const AliasCSS: Index = {
         }
         compileStatement += gpStatement + '\n';
       }
+
+      //Keyframes
+      for (const key in keyframe) {
+      if (keyframe.hasOwnProperty(key)) {
+        let kfStatement='@keyframes '+ key +"{\n";
+        const split=keyframe[key].split(/\s+/);
+        split.forEach((each:string) => {
+          const[at,pNv]=each.replace("-","=").split("=");
+          kfStatement+=` ${at.replace('@','')}% {${this.statementMaker.make(pNv,null,true)}}`
+        });
+        if (!this.keyframe.hasOwnProperty(key)) {
+          this.keyframe[key] = keyframe[key];
+          globalStatement += kfStatement + '\n}\n';
+        }
+        compileStatement += kfStatement + '\n}\n';
+      }
+    }
     }
     return [compileStatement, globalStatement];
   },

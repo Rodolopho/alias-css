@@ -59,9 +59,15 @@ export const compiler:{[key:string]:any}={
         }else if(this.cache.propertyAndValue.hasOwnProperty(pnv)){
             result=this.cache.propertyAndValue[pnv];
         }else{
-            result=getPropertyAndValue(pnv, this.cssProps, this.staticClassNames, this.custom);
+            try {
+                result=getPropertyAndValue(pnv, this.cssProps, this.staticClassNames, this.custom);
+            } catch (error) {
+               console.log(error) 
+            }
+            
         }
         if(result){
+            if(bool===true) return result;
             this.cache.propertyAndValue[pnv]=result;
             if(media){
                 return `${media}{.${

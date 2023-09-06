@@ -5,7 +5,7 @@ const  media :{
     }
 }
     =  {
-    test:/^(print|xs|sm|md|lg|xl|xxl|-sm|-md|-lg|-xl|-xxl)(?=[-|_])/,
+    test:/^(print|xs|sm|md|lg|xl|xxl|-xs|-sm|-md|-lg|-xl|-xxl)(?=[-|_])/,
     target:{
          print: '@media print',
         xs: '@media (max-width : 576px)',
@@ -14,6 +14,7 @@ const  media :{
         lg: '@media (min-width : 992px)',
         xl: '@media (min-width : 1200px)',
         xxl: '@media (min-width : 1408px)',
+        '-xs': '@media (min-width : 576px)',
         '-sm': '@media (max-width : 576px)',
         '-md': '@media (max-width : 768px)',
         '-lg': '@media (max-width : 992px)',
