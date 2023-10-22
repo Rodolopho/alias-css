@@ -1,7 +1,7 @@
 // import color from './color.js';
 //  gta-header_header--side_side_side--footer_footer
 export default function grid(str: string, custom: { [key: string]: { [key: string]: string } }) {
-  //case -auto-auto-auto || -auto1px-auto200px 
+  // case -auto-auto-auto || -auto1px-auto200px 
   str = str.replace(/^[-]/, '');
   let result = '';
 

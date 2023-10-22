@@ -1,6 +1,6 @@
 const  element :{
     [key:string]:any,
-    process: Function
+    process: (...args: any[]) => any
 }
     =  {
     test:/^_[_]?[A-Za-z0-9_]+(?=[_|-])/,

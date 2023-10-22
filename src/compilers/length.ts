@@ -15,6 +15,6 @@ export default {
         .replace(/([\d])p[\s]/g,"$1% ")
         .replace(/([\d])p$/,"$1%"),
 
-     length:(value:string)=>{},   
+     length:(value:string)=>{return},   
 }
    

@@ -4,7 +4,7 @@ type Property = {
     alias:string,
     type:string,
     values:[],
-    compiler:Function,
+    compiler:(...args: any[]) => any,
     [key:string]:any
 
 }
@@ -20,7 +20,7 @@ export  default function getPropertyAndValue(
       custom:{[key:string]:{[key:string]:string}}
       ): string[]|null|{}{
 
-    //Case 1 StaticClassNames
+    // Case 1 StaticClassNames
     if(staticClassNames.hasOwnProperty(className)){
         return staticClassNames[className];
     }
@@ -29,7 +29,7 @@ export  default function getPropertyAndValue(
     if(property){
         const prop=property.property?property.property:propertyKey;
 
-            //Case 2: CSS Variables
+            // Case 2: CSS Variables
             if (/--var--/.test(className)) {
                 const splits: string[] = className.split(/--var--/);
                 if(cssPropertiesWithAlias.hasOwnProperty(splits[0])){

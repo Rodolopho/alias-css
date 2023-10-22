@@ -6,7 +6,7 @@ import { staticClassNamesAlias } from "./static/staticClassNamesAlias.js";
 import { customStaticClassNames } from "./static/customStaticClassNames.js";
 import config from './config.js'
  import cssProperties from './css-properties-all.js'
-//import cssProperties from '../'
+// import cssProperties from '../'
 import helper from './helper.js';
 import {customColors} from './static/customColors.js'
 
@@ -26,27 +26,27 @@ export const compiler:{[key:string]:any}={
 
     make(className:string,as?:string, bool?:boolean){
         let [media, elementAndPseudo,important,workingClassName]=['','','',className]
-        //First Check if its has media
+        // First Check if its has media
         const [mediaProperty] :any =className.match(mediaSelector.test)?className.match(mediaSelector.test):[null];
         if(mediaProperty){
             media=mediaSelector.target[mediaProperty];
             workingClassName=className.replace(mediaProperty,'');
         }
         
-        //process --important flag
+        // process --important flag
         if(/(-i|--important)$/.test(className)){
             important=' !important';
             workingClassName=workingClassName.replace(/(-i|--important)$/,'');
         }
-        //process Pseudo State
-        let pseudoAndElementResult=pseudoAndElement(workingClassName);
+        // process Pseudo State
+        const pseudoAndElementResult=pseudoAndElement(workingClassName);
         workingClassName=pseudoAndElementResult[1];
         elementAndPseudo=pseudoAndElementResult[0];
-        //---------------------------------------------------------------------
+        // ---------------------------------------------------------------------
         
         const pnv=workingClassName.replace(/^-/,'');
         let result :any ='';
-        //x-class
+        // x-class
          if(/^(x-width|x-height)/.test(workingClassName)){
             const extract=getPropertyAndValue(pnv.replace('x-',''), this.cssProps, this.staticClassNames, this.custom);
             if(typeof extract === 'string'){
@@ -85,7 +85,8 @@ export const compiler:{[key:string]:any}={
 
     group(str:string, as:string){
         // return this.make(str,as);
-        let [statement, container]=['', '\n'];
+        // let const [statement, container]=['', '\n'];
+        let statement='';
         [...str.trim().split(/\s+/)].forEach((e)=>{
             const getEachClassNameCompiled=this.make(e,as);
             if(getEachClassNameCompiled) statement += getEachClassNameCompiled + ' \n';
@@ -133,7 +134,7 @@ export const compiler:{[key:string]:any}={
 
         return jsStyle;
   },
-  //for config
+  // for config
   groupObj(obj: { [key: string]: string }) {
     if (typeof obj !== 'object') return false;
     let statement = '';
@@ -165,11 +166,11 @@ type Property = {
     alias:string,
     type:string,
     values:[],
-    compiler:Function,
+    compiler:(...args: any[]) => any,
     [key:string]:any
 
 }
 
 
-//compiler.staticClassNames={...helper().generateStaticClassNames(compiler.cssProps,config['css-global-values'])};
-//compiler.addCustom('color',customColors)
+// compiler.staticClassNames={...helper().generateStaticClassNames(compiler.cssProps,config['css-global-values'])};
+// compiler.addCustom('color',customColors)

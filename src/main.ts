@@ -17,7 +17,7 @@ const AliasCSS: Index = {
   output: null,
   ignore: [],
   useColon:true,// class:className="valid-ACSS-class-names"
-  globPattern:'',//Use this to check valid new created file to add to watch during watch.on
+  globPattern:'',// Use this to check valid new created file to add to watch during watch.on
   customGroupStatement: '',
   customStatement: '',
   useFilename:'',
@@ -31,7 +31,7 @@ const AliasCSS: Index = {
 
     if(configFile.hasOwnProperty('extend') && typeof configFile.extend === 'object'){
 
-      let filteredObj:{[key:string]:{}}={};
+      const filteredObj:{[key:string]:{}}={};
 
       Object.keys(configFile.extend).map((key)=>{
           if (configFile.extend[key].hasOwnProperty('compiler') && (typeof configFile.extend[key].compiler === 'function')){
@@ -113,7 +113,7 @@ const AliasCSS: Index = {
    const data = fs.readFileSync(file, 'utf-8');
         const classList:string[] = [];
         const groups :{[key:string]:any}= {};
-        let keyframe:{[key:string]:any}= {};
+        const keyframe:{[key:string]:any}= {};
         const matchRegExp=this.useColon?this.matchRegExpWithColon:this.matchRegExp;
         const matchRegExpKeyFrame=this.useColon?this.matchRegExpWithColonKeyFrame:this.matchRegExpKeyFrame;
        
@@ -149,7 +149,7 @@ const AliasCSS: Index = {
                     }
                 })
               }
-                ///---------keyframes
+                // /---------keyframes
               const matchesKF= data.match(new RegExp(matchRegExpKeyFrame,"g"));
             if(matchesKF===null)return [classList, groups,keyframe]
             
@@ -174,7 +174,7 @@ const AliasCSS: Index = {
                   }
                   }
                 })
-                ///--------end-of-keyframes
+                // /--------end-of-keyframes
             
             
         return [classList, groups,keyframe];
@@ -195,14 +195,14 @@ const AliasCSS: Index = {
           if (this.classList.indexOf(e) === -1) {
             globalStatement += statement + '\n';
             this.classList.push(e);
-            //console.log(e);
+            // console.log(e);
           }
           compileStatement += statement + '\n';
         }
       });
     }
     for (const key in groups) {
-      if (groups.hasOwnProperty(key)) {
+      if(groups.hasOwnProperty(key)){
         const gpStatement = this.statementMaker.group(groups[key], key);
         if (!this.groups.hasOwnProperty(key)) {
           this.groups[key] = groups[key];
@@ -210,8 +210,9 @@ const AliasCSS: Index = {
         }
         compileStatement += gpStatement + '\n';
       }
+    }
 
-      //Keyframes
+      // Keyframes
       for (const key in keyframe) {
       if (keyframe.hasOwnProperty(key)) {
         let kfStatement='@keyframes '+ key +"{\n";
@@ -227,7 +228,7 @@ const AliasCSS: Index = {
         compileStatement += kfStatement + '\n}\n';
       }
     }
-    }
+    
     return [compileStatement, globalStatement];
   },
   // ----------------------------------------------------------

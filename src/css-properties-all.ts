@@ -18,14 +18,14 @@ type Property = {
     property?: string,
     type:string,
     values:string[],
-    compiler:Function|string,
+    compiler:(string | ((...args: any[]) => any)),
 
 }
 const cssProps:{
     [key:string]:Property
 }={ 
-    //type:s=static,d=dynamic
-   //-----------------xc----------------
+    //  type:s=static,d=dynamic
+   //  -----------------xc----------------
 'width-grow':{
     alias:'',
     property:'--width-grow',
@@ -54,7 +54,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:[],
 }, 
-// ----------xc-end
+//  ----------xc-end
 'accent-color':{
     alias:'',
     type:'d',
@@ -79,7 +79,7 @@ const cssProps:{
     compiler:'',
     values:['auto:a','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
 },
-'all':{//comes under global static definition
+'all':{//  comes under global static definition
     alias:'',
     type:'s',
     compiler:'',
@@ -146,7 +146,7 @@ const cssProps:{
     values:[],
 },
 
-//----------B--------'
+//  ----------B--------'
 'backdrop-filter':{
     alias:'bf',
     type:'d',
@@ -248,7 +248,7 @@ const cssProps:{
     values:['auto:a'],
 },
 'block-size':{
-    alias:'',//border-spacing-bs
+    alias:'',// border-spacing-bs
     type:'d',
     compiler:lenNumPer,
     values:['auto:a'],
@@ -379,8 +379,8 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
-'border-image':{ //--
-    alias:'',//taken by border-inline
+'border-image':{ // --
+    alias:'',// taken by border-inline
     type:'',
     compiler:$c.url,
     values:[''],
@@ -508,7 +508,7 @@ const cssProps:{
 'border-right':{
     alias:'brt',
     type:'d',
-    compiler:lenNumPer,
+    compiler:$c.border,
     values:[''],
 },
 'border-right-color':{
@@ -548,7 +548,7 @@ const cssProps:{
     values:[''],
 },
 'border-style':{
-    alias:'bs',//------
+    alias:'bs',// ------
     type:'s',
     compiler:'',
     values:style,
@@ -607,13 +607,13 @@ const cssProps:{
     compiler:'',
     values:['slice:s','clone:c'],
 },
-'box-reflect':{//--- gradient
+'box-reflect':{// --- gradient
     alias:'bxr',
     type:'d',
     compiler:lenNumPer,
     values:['none:n','below:b','above:a','left:l','right:r'],
 },
-'box-shadow':{//--require -webkit-box-reflect
+'box-shadow':{// --require -webkit-box-reflect
     alias:'bxs',
     type:'d',
     compiler:$c.shadow, 
@@ -638,13 +638,13 @@ const cssProps:{
     values:['auto:au','all','always:al','avoid:av','avoid-column:ac','avoid-page:ap','avoid-region:ar','column:c','left:l','page:p','recto:rec','region:reg','right:r','verso:v'],
 },
 'break-inside':{
-    alias:'',//----
+    alias:'',// ----
     type:'s',
     compiler:'',
     values:['auto:au','all','always:al','avoid:av','avoid-column:ac','avoid-page:ap','avoid-region:ar','column:c','left:l','page:p','recto:rec','region:reg','right:r','verso:v'],
 },
 
-//----------C--------
+// ----------C--------
 'caption-side':{
     alias:'',
     type:'s',
@@ -652,13 +652,13 @@ const cssProps:{
     values:['top:t','bottom:b'],
 },
 'caret-color':{
-    alias:'',//---
+    alias:'',// ---
     type:'d',
     compiler:$c.color,
     values:[],
 },
 'clear':{
-    alias:'cl',//--
+    alias:'cl',// --
     type:'',
     compiler:'',
     values:['none:n','left:l','right:r','both:b'],
@@ -764,9 +764,9 @@ const cssProps:{
   'text:t','vertical-text:vt','w-resize:wr','wait:w','zoom-in:zi','zoom-out:zo'],
 },
  
-//----------D--------
+// ----------D--------
 'direction':{
-    alias:'dir',//--
+    alias:'dir',// --
     type:'s',
     compiler:'',
     values:['ltr:l','rtl:r'],
@@ -781,7 +781,7 @@ const cssProps:{
   'table-column-group:tcg','table-footer-group:tfg','table-header-group:thg','table-row:tr','table-row-group:trg'],
 },
 
-//----------E--------
+// ----------E--------
 'empty-cells':{
     alias:'ec',
     type:'s',
@@ -789,7 +789,7 @@ const cssProps:{
     values:['hide:h','show:s'],
 },
 
-//----------F--------
+// ----------F--------
 'filter':{
     alias:'',
     type:'d',
@@ -814,7 +814,7 @@ const cssProps:{
     compiler:'',
     values:['row:r','row-reverse:rr','column:c','column-reverse:cr'],
 },
-'flex-flow':{//--incomplete
+'flex-flow':{// --incomplete
     alias:'',
     type:'d',
     compiler:(value:string)=>value.replace(/[-](w|n)/," $1"),
@@ -839,17 +839,17 @@ const cssProps:{
     values:['nowrap:nw:n','wrap:w','wrap-reverse:wr'],
 },
 'float':{
-    alias:'f',//----
+    alias:'f',// ----
     type:'s',
     compiler:'',
     values:['none:n','left:l','right:r',''],
 },
-// 'font':{//--
-//     alias:'',
-//     type:'d',
-//     compiler:'',
-//     values:[''],
-// },
+//  'font':{// --
+//      alias:'',
+//      type:'d',
+//      compiler:'',
+//      values:[''],
+//  },
 
 'font-family':{
     alias:'ff',
@@ -889,18 +889,18 @@ const cssProps:{
     values:['none:n'],
 },
 'font-stretch':{
-    alias:'',//--
+    alias:'',// --
     type:'s',
     compiler:'',
     values:['ultra-condensed:uc','extra-condensed:ec','condensed:c','semi-condensed:sc','normal:nl','semi-expanded:se','expanded:e','extra-expanded:ee','ultra-expanded:ue'],
 },
 'font-style':{
-    alias:'',//--
+    alias:'',// --
     type:'s',
     compiler:'',
     values:['normal:nl','italic:i','oblique:o'],
 },
-'font-synthesis':{//--need work
+'font-synthesis':{// --need work
     alias:'',
     type:'s',
     compiler:'',
@@ -912,7 +912,7 @@ const cssProps:{
     compiler:'',
     values:['normal:nl','small-caps:sc'],
 },
-'font-variant-alternates':{//--need work
+'font-variant-alternates':{// --need work
     alias:'fva',
     type:'',
     compiler:'',
@@ -924,7 +924,7 @@ const cssProps:{
     compiler:'',
     values:['normal:nl','small-caps:sc','all-small-caps:asc','petite-caps:pc','all-petite-caps:apc','unicase:u','titling-caps:tc'],
 },
-'font-variant-east-asian':{//--
+'font-variant-east-asian':{// --
     alias:'fvea',
     type:'',
     compiler:'',
@@ -962,7 +962,7 @@ const cssProps:{
     values:['bolder:b2:blr','lighter:l:ltr','100:1','200:2','300:3','400:4:normal:nl','500:5','600:6','700:7:bold:b','800:8','900:9'],
 },
 
-//----------G--------
+// ----------G--------
 'gap':{
     alias:'g',
     type:'d',
@@ -985,18 +985,18 @@ const cssProps:{
     alias:'gac',
     type:'d',
     compiler:(value:string)=>{
-        // if(/^fit-content-/.test(value:string)){
-        //     return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") //fit-content-50px
-        // .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
-        // }
-        // if(/^minmax-/.text(value:string)){
+        //  if(/^fit-content-/.test(value:string)){
+        //      return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") // fit-content-50px
+        //  .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
+        //  }
+        //  if(/^minmax-/.text(value:string)){
             return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
             .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
             .replace(/-([\d|a|a])/g,' $1')
             .replace(/([\d])d([\d])/g,'$1.$2')
             .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
 
-        //} 
+        // } 
 
     },
     values:['max-content:xc','min-content:mc','auto:a'],
@@ -1011,18 +1011,18 @@ const cssProps:{
     alias:'gar',
     type:'d',
     compiler:(value:string)=>{
-        // if(/^fit-content-/.test(value:string)){
-        //     return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") //fit-content-50px
-        // .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
-        // }
-        // if(/^minmax-/.text(value:string)){
+        //  if(/^fit-content-/.test(value:string)){
+        //      return value.replace(/(fit-content)[-]([\w]+)/,"$1( $2 )") // fit-content-50px
+        //  .replace(/([\d])d([\d])/,'$1.$2').replace(/([\d])p([\s])/,"$1% ");
+        //  }
+        //  if(/^minmax-/.text(value:string)){
             return value.replace(/[-]?(minmax)-(min-content|max-content|auto|\w+)-(min-content|max-content|auto|\w+)/g," $1($2 , $3 ) ")
             .replace(/[-]?(fit-content)[-]([\w]+)/g, "$1( $2 ) ")
             .replace(/-([\d|a|a])/g,' $1')
             .replace(/([\d])d([\d])/g,'$1.$2')
             .replace(/([\d])p([\s])/g,"$1% ").replace(/p$/,"%");
 
-        //} 
+        // } 
 
     },
     values:['max-content:xc','min-content:mc','auto:a'],
@@ -1081,7 +1081,7 @@ const cssProps:{
     compiler:lenByNumPer,
     values:['auto:a'],
 },
-'grid-template':{//----
+'grid-template':{// ----
     alias:'gt',
     type:'d',
     compiler:lenByNumPer,
@@ -1093,7 +1093,7 @@ const cssProps:{
     compiler:(value:string)=>value.replace(/[-]?([\w]+)/g,"'$1' ").replace(/_/g," ").replace(/dot/g,'.'),
     values:['none'],
 },
-'grid-template-columns':{//--repeat
+'grid-template-columns':{// --repeat
     alias:'gtc',
     type:'d',
     compiler:(value:string)=>{
@@ -1105,7 +1105,7 @@ const cssProps:{
     },
     values:['subgrid:sg:s','masonry:m'],
 },
-'grid-template-rows':{//--repeat
+'grid-template-rows':{// --repeat
     alias:'gtr',
     type:'d',
     compiler:(value:string)=>{
@@ -1118,7 +1118,7 @@ const cssProps:{
     values:['subgrid:sg:s','masonry:m'],
 },
 
-//----------H--------
+// ----------H--------
 'hanging-punctuation':{
     alias:'hp',
     type:'d',
@@ -1126,7 +1126,7 @@ const cssProps:{
     values:['none:n','first:f','last:l','force-end:fe','allow-end:ae'],
 },
 'height':{
-    alias:'h',//--
+    alias:'h',// --
     type:'d',
     compiler:lenFitContent,
     values:['auto:a','max-content:xc','min-content:mc'],
@@ -1138,7 +1138,7 @@ const cssProps:{
     values:['auto:a','none:n','manual:m'],
 },
 
-//----------I--------
+// ----------I--------
 'image-rendering':{
     alias:'ir',
     type:'s',
@@ -1206,7 +1206,7 @@ const cssProps:{
     values:['auto:a','isolate:i'],
 },
 
-//----------J--------
+// ----------J--------
 'justify-content':{
     alias:'jc',
     type:'s',
@@ -1231,10 +1231,10 @@ const cssProps:{
     'safe center:safe-center:sc','unsafe center:unsafe-center:uc'],
 },
 
-//----------K--------
+// ----------K--------
 
 
-//----------L--------
+// ----------L--------
 'left':{
     alias:'l',
     type:'d',
@@ -1260,7 +1260,7 @@ const cssProps:{
     values:['normal:nl'],
 },
 'list-style':{
-    alias:'ls',//--
+    alias:'ls',// --
     type:'',
     compiler:'',
     values:['armenian:a:ar','circle:c','cjk-ideographic:ci','hebrew:h','hiragana:hira:h2','hiragana-iroha:hi','katakana:k',
@@ -1288,7 +1288,7 @@ const cssProps:{
   'lower-greek:lg','lower-latin:ll','lower-roman:lr','none:n','square:s','upper-alpha:ua','upper-latin:ul',],
 },
 
-//----------M--------
+// ----------M--------
 'margin':{
     alias:'m',
     type:'d',
@@ -1356,7 +1356,7 @@ const cssProps:{
     values:['auto:a'],
 },
 'mask':{
-    alias:'',//--
+    alias:'',// --
     type:'',
     compiler:'',
     values:['none:n'],
@@ -1478,7 +1478,7 @@ const cssProps:{
     values:mode,
 },
 
-//----------O--------
+// ----------O--------
 'object-fit':{
     alias:'',
     type:'s',
@@ -1491,7 +1491,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:['top:t','left:l','center:c','bottom:b','right:r'],
 },
-'offset':{//--
+'offset':{// --
     alias:'',
     type:'',
     compiler:'',
@@ -1630,7 +1630,7 @@ const cssProps:{
     values:['auto:a','contain:c','none:n'],
 },
 
-//----------P--------
+// ----------P--------
 'padding':{
     alias:'p',
     type:'d',
@@ -1715,7 +1715,7 @@ const cssProps:{
     compiler:'',
     values:['auto:a','avoid:av:a2'],
 },
-'paint-order':{//--
+'paint-order':{// --
     alias:'po',
     type:'s',
     compiler:'',
@@ -1773,15 +1773,15 @@ const cssProps:{
     values:['static:st:s2','absolute:a','fixed:f','relative:r','sticky:s'],
 },
 
-//----------Q--------
-'quotes':{//--
+// ----------Q--------
+'quotes':{// --
     alias:'q',
     type:'',
     compiler:'',
     values:[''],
 },
 
-//----------R--------
+// ----------R--------
 'resize':{
     alias:'rs',
     type:'s',
@@ -1807,7 +1807,7 @@ const cssProps:{
     values:[''],
 },
 
-//----------S--------
+// ----------S--------
 'scale':{
     alias:'s',
     type:'d',
@@ -1977,7 +1977,7 @@ const cssProps:{
     values:[''],
 },
 
-//----------T--------
+// ----------T--------
 'tab-size':{
     alias:'ts',
     type:'d',
@@ -2057,7 +2057,7 @@ const cssProps:{
     values:['none:n','inter-word:iw','inter-character:ic','distribute:d','auto:a'],
 },
 'text-orientation':{
-    alias:'',//--
+    alias:'',// --
     type:'',
     compiler:'',
     values:['mixed:m','upright:u','sideways:s','sideways-right:sr','use-glyph-orientation:ugo'],
@@ -2153,7 +2153,7 @@ const cssProps:{
     values:['none:n'],
 },
 
-//----------U--------
+// ----------U--------
 'unicode-bidi':{
     alias:'ub',
     type:'s',
@@ -2168,7 +2168,7 @@ const cssProps:{
 
 },
 
-//----------V--------
+// ----------V--------
 'vertical-align':{
     alias:'va',
     type:'d',
@@ -2182,7 +2182,7 @@ const cssProps:{
     values:['visible:v','hidden:h','collapse:c'],
 },
 
-//----------W--------
+// ----------W--------
 'white-space':{
     alias:'ws',
     type:'s',
@@ -2202,7 +2202,7 @@ const cssProps:{
     values:['max-content:xc','min-content:mc','auto:a','fit-content:fc'],
 },
 'will-change':{
-    alias:'wc',//--
+    alias:'wc',// --
     type:'s',
     compiler:'',
     values:['auto:a','scroll-position:sc','contents:c','transform:tf','opacity:o','left:l','top:t'],
@@ -2232,7 +2232,7 @@ const cssProps:{
     values:['horizontal-tb:ht','vertical-rl:vrl','vertical-lr:vlr'],
 },
 
-//----------Z--------
+// ----------Z--------
 'z-index':{
     alias:'zi',
     type:'d',
@@ -2240,13 +2240,13 @@ const cssProps:{
     values:['auto:a'],
 },
 
-//----------------SVG---
-// 'alignment-baseline':{
-//     alias:'',
-//     type:'',
-//     compiler:'',
-//     value:['']
-// },
+// ----------------SVG---
+//  'alignment-baseline':{
+//      alias:'',
+//      type:'',
+//      compiler:'',
+//      value:['']
+//  },
 'alignment-baseline':{
     alias:'ab',
     type:'s',

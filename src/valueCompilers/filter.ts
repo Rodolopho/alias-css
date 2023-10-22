@@ -16,10 +16,10 @@ export default function filter(valuePortion: string, custom: Custom) {
 function extractValue(each: string, custom: Custom) {
   const extractFnV = each.split(/^[-]?([a-zA-Z-]+)/);
   let f = extractFnV[1];
-  let v = extractFnV[2];
+  const v = extractFnV[2];
   if (/-$/.test(f)) {
     f = f.replace(/-$/, '');
-    //v = '-' + v;//--------------------------no negative value accepted
+    // v = '-' + v;// --------------------------no negative value accepted
   }
   if (f.match(/drop-shadow|ds/)) {
     return func[f] + '(' + shadow(v, custom) + ')';
