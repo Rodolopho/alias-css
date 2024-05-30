@@ -47,7 +47,8 @@ export const compiler:{[key:string]:any}={
         const pnv=workingClassName.replace(/^-/,'');
         let result :any ='';
         // x-class
-         if(/^(x-width|x-height)/.test(workingClassName)){
+        
+         if(/^(x-width|x-height)/.test(pnv)){
             const extract=getPropertyAndValue(pnv.replace('x-',''), this.cssProps, this.staticClassNames, this.custom);
             if(typeof extract === 'string'){
                 const [p,v]=extract.split(':');
@@ -78,7 +79,7 @@ export const compiler:{[key:string]:any}={
             }
 
         }else{
-            console.log(`unable to process ${className} [media:${media},pseudoSelector:${elementAndPseudo},imp:${important}]`)
+            console.log(`Unable to process ${className} [media:${media},pseudoSelector:${elementAndPseudo},imp:${important}]`)
         }
 
     },

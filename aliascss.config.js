@@ -5,6 +5,10 @@ export  const config={
         "--file":true
     },
     extend:{
+        'test':{
+            property:'--webkit-text-shadow',
+            compiler:(value)=>value
+        },
         'font-size':{
             alias:'fs',
             values:["2rem:xl"],
@@ -12,8 +16,9 @@ export  const config={
                 return value;
             }
         },
-        'shadow':{
+        'shadows':{
             property:'box-shadow',
+            //alias:'sdo',
             compiler:(value)=>{
                 value=value.slice(1);
                 const values={

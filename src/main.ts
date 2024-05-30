@@ -92,11 +92,11 @@ const AliasCSS: Index = {
   },
 
   // extract class="dn fs12pc" and class-group="df fs12px" acss-group or className=""
-  matchRegExp:/(?:(class|className|class[-_][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExp:/(?:(class|className|class[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
 
-  matchRegExpKeyFrame:/(?:(keyframes[-_][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-  matchRegExpWithColonKeyFrame:/(?:(keyframes[-_:][\w-]+))=(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpKeyFrame:/[\s](?:(keyframes[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColonKeyFrame:/[\s](?:(keyframes[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
 
   // it will hold all the class name list that had been already compiled
   classList: [],
@@ -164,7 +164,7 @@ const AliasCSS: Index = {
                     // if name already exists
                     // if (names.hasOwnProperty(name) && names[name] === extraction[2]) {
                     if (keyframe.hasOwnProperty(name)){
-                       keyframe[name] = keyframe[name] +" "+ extraction[2];
+                       keyframe[name] = keyframe[name] +" "+ extraction[2].trim().replace(/[\s]+/," ");
                     }
                     else {
                         // new name
@@ -186,6 +186,7 @@ const AliasCSS: Index = {
     let globalStatement = '';
     const [classList, groups,keyframe] = this.extractClassName(file);
 
+    //Process ClassList
     if (classList.length) {
       //  compileStatement=`\n/* AliasCSS : These are classnames compiled  from ${path.basename(file)}*/\n\n`,
       classList.forEach((e: string) => {
@@ -201,6 +202,7 @@ const AliasCSS: Index = {
         }
       });
     }
+    //Process Groups
     for (const key in groups) {
       if(groups.hasOwnProperty(key)){
         const gpStatement = this.statementMaker.group(groups[key], key);
@@ -212,15 +214,26 @@ const AliasCSS: Index = {
       }
     }
 
+    //Process Keyframes
       // Keyframes
       for (const key in keyframe) {
       if (keyframe.hasOwnProperty(key)) {
         let kfStatement='@keyframes '+ key +"{\n";
         const split=keyframe[key].split(/\s+/);
         split.forEach((each:string) => {
-          const[at,pNv]=each.replace("-","=").split("=");
-          kfStatement+=` ${at.replace('@','')}% {${this.statementMaker.make(pNv,null,true)}}`
+          
+          //case 1-> @100-acss
+          //case 2->@10:20:30-acss
+          //case 3->@[10,20,30]-acss
+          try {
+            const[at,pNv]=each.replace("-","=").split("=");
+            kfStatement+=` ${at.replace('@','').replace(/:/g,',').replace(/,/g,"%,").replace(/[\[|\]]/g,'')}% {${this.statementMaker.make(pNv,null,true)}}`    
+          } catch (error) {
+            console.error('Not a valid entry for AliasCSS keyframes processor : '+each, error)
+          }
+          
         });
+        // push keyframes to global scope if there is no other with the same animation name
         if (!this.keyframe.hasOwnProperty(key)) {
           this.keyframe[key] = keyframe[key];
           globalStatement += kfStatement + '\n}\n';
@@ -350,11 +363,11 @@ const AliasCSS: Index = {
     } else {
       console.error('\x1b[31m', 'Please provide, entry or/and output file/s');
     }
-  }, // EORUN
+  }, // End-of-RUN
   //    ----------------WATCH-------------------------------
   watch(){
     const watcher = chokidar.watch(this.input, {
-      ignored: '*.css', // ignore dotfiles
+      ignored: '*.css', // ignore dot-files
       persistent: true
     });
       const compileFile=(file:any)=>{

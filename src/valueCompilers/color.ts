@@ -6,8 +6,8 @@ export default function color(color: string, custom: { [key: string]: { [key: st
   }
 
 
-  // hexadecimal
-  if (/^[0-9a-fA-F]{3,6}$/.test(color)) {
+  // hexadecimal =+ alpha 00-ff
+  if (/^[0-9a-fA-F]{3,8}$/.test(color)) {
     return `#${color}`;
 
     // Name
@@ -31,7 +31,7 @@ export default function color(color: string, custom: { [key: string]: { [key: st
     //             let a = color.slice(9).replace("d", ".").replace('p','%');
     //             return `rgba(${color.replace(a,'').match(/[\d]{3}/g)?.join(',')},${a})`;
     //         }
-    //     // rgb/a in pecentage
+    //     // rgb/a in percentage
     //   // ------------New
 
     //   //  }else if(){

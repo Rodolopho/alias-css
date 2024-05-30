@@ -3,7 +3,7 @@ import { compiler as statementMaker} from './mainCompiler.js';
 export default statementMaker;
 type ClassPrinter = { [key: string]: any };
 export let classPrinter: ClassPrinter = {
-  unvalidLists: [],
+  invalidLists: [],
   classLists: [],
   styleTagExists: false,
   customCheck: false,
@@ -21,29 +21,29 @@ export let classPrinter: ClassPrinter = {
     this.styleTagExists = true;
     return styleTag;
   },
-  // you can always apend a class if you like modify the look here if you want
+  // you can always append a class if you like modify the look here if you want
   appendToStyleTag(classStatement: string) {
     const createNewClass = document.createTextNode(classStatement);
     this.createStyleTag().appendChild(createNewClass);
   },
   // compile dom stylesheet
-  // show current style statestatement
+  // show current style statement
   compile() {
     const classes = document.getElementById('styleAlias');
     if (classes) {
-      const preetyPrint = classes.innerHTML
+      const prettyPrint = classes.innerHTML
         .replace(/\}/g, '</br>}</br>')
         .replace(/\{/g, '{</br>&nbsp;&nbsp;&nbsp;&nbsp;');
-      document.write(preetyPrint);
+      document.write(prettyPrint);
     } else {
       console.warn('There is not ACSS used in this document!!');
       alert('Could not found acss statements  in this Document!');
     }
   },
 
-  // print classname of el to style tag; gets statement from statementMaker.make(eachClass);
+  // print className of el to style tag; gets statement from statementMaker.make(eachClass);
   print(el: HTMLElement) {
-    // initialize class or acss-class value conatiner
+    // initialize class or acss-class value container
     let attrValue = '';
     const testRegExp=this.useColon? /class[-_:]/: /class[-_]/;
     const testRegExpKF=this.useColon? /keyframes[-_:]/: /keyframes[-_]/;
@@ -64,11 +64,16 @@ export let classPrinter: ClassPrinter = {
            if( testRegExpKF.test(each.name)){
             const key=each.name.replace(testRegExpKF,'');
               let kfStatement='@keyframes '+ key +"{\n";
-              const split=each.value.split(/\s+/);
+              const split=each.value.trim().split(/\s+/);
               split.forEach((each:string) => {
-                const[at,pNv]=each.replace("-","=").split("=");
-                const result=statementMaker.make(pNv,null,true);
-                kfStatement+=` ${at.replace('@','')}% {${result?result:''}}`
+                try {
+                  const[at,pNv]=each.replace("-","=").split("=");
+                  const result=statementMaker.make(pNv,null,true);
+                  kfStatement+=` ${at.replace('@','').replace(/:/g,',').replace(/,/g,"%,").replace(/[\[|\]]/g,'')}% {${result?result:''}}`
+                } catch (error) {
+                  console.log('invalid Entry for AliasCSS keyframes processor : '+each,error);
+                }
+                
               });
                this.appendToStyleTag(kfStatement+ "\n}");
            }  
@@ -85,15 +90,15 @@ export let classPrinter: ClassPrinter = {
       if (result) {
         if (styleTag) {
           styleTag.innerHTML = '';
-          const createNewgroup = document.createTextNode(result);
-          styleTag.appendChild(createNewgroup);
+          const createNewGroup = document.createTextNode(result);
+          styleTag.appendChild(createNewGroup);
           //  return true;
         } else {
           const styleTag: any = document.createElement('style');
           styleTag.id = el.getAttribute('acss-group-test');
           document.getElementsByTagName('head')[0].appendChild(styleTag);
-          const createNewgroup = document.createTextNode(result);
-          styleTag.appendChild(createNewgroup);
+          const createNewGroup = document.createTextNode(result);
+          styleTag.appendChild(createNewGroup);
         }
       }
     }
@@ -106,7 +111,7 @@ export let classPrinter: ClassPrinter = {
     tmpClassList.forEach((eachClass: string) => {
       // escape repeated class name
 
-      if (this.classLists.indexOf(eachClass) === -1 && this.unvalidLists.indexOf(eachClass) === -1) {
+      if (this.classLists.indexOf(eachClass) === -1 && this.invalidLists.indexOf(eachClass) === -1) {
         // add to classlist for reference
         this.classLists.push(eachClass);
 
@@ -117,17 +122,17 @@ export let classPrinter: ClassPrinter = {
         if (result) {
           this.appendToStyleTag(result);
         } else {
-          // not a valid ACSS clasNames
-          this.unvalidLists.push(eachClass);
+          // not a valid ACSS classNames
+          this.invalidLists.push(eachClass);
         }
       }
     });
-  }, // eomain
-  // returns css statemnt from current element
+  }, // end-of-main
+  // returns css statement from current element
   compileElement(el: HTMLElement, list: [] = []) {
-    const clist: string[] = list;
+    const classList: string[] = list;
     let statement = ' ';
-    // initialize class or acss-class value conatiner
+    // initialize class or acss-class value container
     let attrValue = '';
     const testRegExp=this.useColon? /class[-_:]/: /class[-_]/;
 
@@ -150,14 +155,14 @@ export let classPrinter: ClassPrinter = {
     // if has value to process
     if (!attrValue.trim()) return;
 
-    // get class and trim out whitespaces
+    // get class and trim out whitespace
     const tmpClassList = attrValue.trim().split(/\s+/);
 
     // looping class
     tmpClassList.forEach((eachClass) => {
-      // escape reppeated classname
-      if (clist.indexOf(eachClass) === -1) {
-        clist.push(eachClass);
+      // escape repeated className
+      if (classList.indexOf(eachClass) === -1) {
+        classList.push(eachClass);
         //  var result=compiler.main(eachClass);
         const result = statementMaker.make(eachClass);
         //  console.log(result);
@@ -166,7 +171,7 @@ export let classPrinter: ClassPrinter = {
           statement += result + ' ';
           //  this.appendToStyleTag(result);
         } else {
-          // not a valid ACSS clasNames
+          // not a valid ACSS classNames
           console.log('Not a valid Aliascss class name:' + eachClass);
         }
       }
@@ -177,14 +182,14 @@ export let classPrinter: ClassPrinter = {
   // returns css statement from given element and child
   returnStatement($el: HTMLElement) {
     let statement = '';
-    const clist: [] = [];
-    const processOuterHtml= this.compileElement($el, clist);
+    const classList: [] = [];
+    const processOuterHtml= this.compileElement($el, classList);
     statement+=processOuterHtml ? processOuterHtml : '';
 
-    // <template> elment
+    // <template> element
     Array.prototype.forEach.call($el.querySelectorAll('template'), (template) => {
       Array.prototype.forEach.call(template.content.querySelectorAll('[class],[acss-class]'), (e) => {
-        const result = this.compileElement(e, clist);
+        const result = this.compileElement(e, classList);
         statement += result ? result : '';
       });
     });
@@ -192,7 +197,7 @@ export let classPrinter: ClassPrinter = {
     // <html>
 
     Array.prototype.forEach.call($el.querySelectorAll('[class],[acss-class]'), (e) => {
-      const result = this.compileElement(e, clist);
+      const result = this.compileElement(e, classList);
       statement += result ? result : '';
     });
 
@@ -206,7 +211,7 @@ export let classPrinter: ClassPrinter = {
     //  $root.dispatchEvent(event);
     $root.dispatchEvent(new CustomEvent('acss:init', { bubbles: true , detail:{aliascss:this}}));
 
-    // <template> elment
+    // <template> element
     Array.prototype.forEach.call($root.querySelectorAll('template'), (template) => {
       Array.prototype.forEach.call(template.content.querySelectorAll('[class],[acss-class]'), (e) => {
         this.print(e);

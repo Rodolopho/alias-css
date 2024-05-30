@@ -46,10 +46,11 @@ export  default function getPropertyAndValue(
                 // const value=property.compiler(valuePortion.replace(/^-/,'') ,custom);
                 const value=property.compiler(valuePortion ,custom);
                 
-                if(value){
+                if(value && value != '-'){
                     return prop+":"+value.replace(/([-]?)([\d]|10|11|12)col/g,(m:string,p1:string,p2:string)=>`${p1}${parseFloat(((100/12)*parseFloat(p2)).toFixed(6))}%`);
                 }else{
                     console.log(`${className}: '${propertyKey}' unable to compile value:${className.replace(propertyKey,'')}`)
+                    return null;
                 }
             }else{
                 console.log("No Compiler found for:" + className);

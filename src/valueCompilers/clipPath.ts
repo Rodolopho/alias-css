@@ -1,6 +1,6 @@
 export default function clipPath(data: string, custom: { [key: string]: { [key: string]: string } }) {
   const valuePortion: string = data.replace(/^-/, '') || '';
-  const match = /^(circle|c|inset|i|polygon|p|ellipse|e)[-]?[\d]/;
+  const match = /^(circle|c|inset|i|polygon|p|ellipse|e|xywh|rect|r)[-]?[\d]/;
   let shape = null;
   let content = '';
   const shapes: { [key: string]: string } = {
@@ -12,6 +12,9 @@ export default function clipPath(data: string, custom: { [key: string]: { [key: 
     e: 'ellipse',
     polygon: 'polygon',
     p: 'polygon',
+    rect:'rect',
+    r:'rect',
+    xywh:'xywh',
     url: 'url',
     u: 'url',
   };
@@ -29,7 +32,7 @@ export default function clipPath(data: string, custom: { [key: string]: { [key: 
         .replace(/p[\s]|p(,)/g, '%$1 ')
         .replace(/_/g, ', ')
         .replace('-at', ' at ')
-        .replace('-round', ' round ');
+        .replace('-round', ' round ').replace(/-([0-9])/g,'$1');
       // content=length(valuePortion.replace(extractShape,''));
     }
   } else {

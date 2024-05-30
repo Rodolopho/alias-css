@@ -5,7 +5,7 @@ const style=['dotted:d','dashed:da:d2','solid:s','double:db:d3','groove:g','ridg
     const mode=['normal:ml','multiply:m','screen:s','overlay:o','darken:d','lighten:l','color-dodge:cd','color-burn:cb','hard-light:hl',
     'soft-light:sl','difference:di:d2','exclusion:e','hue:h','saturation:sa:s2','color:c','luminosity:lu:l2'];
     const lenNumPer=(value:string)=>value.replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,'$1.$2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%").replace(/([a-z])([\d-])/g,'$1 $2');
-    const signedLenNumPer=(value:string)=>value.replace(/([\d])d([\d])/g,'$1.$2').replace(/([a-z])([\d-])/g,'$1 $2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%");
+    const signedLenNumPer=(value:string)=>value.replace(/([\d])d([\d])/g,'$1.$2').replace(/([a-z])([\d-])/g,'$1 $2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%").replace(/[-]([a-z])/g,'$1');
     const lenByNumPer=(value:string)=>value.replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,'$1.$2').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%").replace(/[\s]by[\s]/g,' / ');
     const lenFitContent=(value:string)=>value.replace(/fit-content-([-]?\w+)/,'fit-content( $1 )').replace(/[-]([-]?[\w])/g,' $1').replace(/([\d])d([\d])/g,' $1.$2 ').replace(/([\d])p[\s]/g,"$1% ").replace(/([\d])p$/,"$1%");
 
@@ -55,95 +55,101 @@ const cssProps:{
     values:[],
 }, 
 //  ----------xc-end
-'accent-color':{
+'accent-color':{//no alias, checked
     alias:'',
     type:'d',
     compiler:$c.color,
     values:[],
 },
-'align-content':{
+'align-content':{ //checked
     alias:'ac',
     type:'s',
     compiler:'',
     values:['stretch:s','center:c','flex-start:fs','flex-end:fe','space-between:sb','space-around:sa','space-evenly:se'],
 },
-'align-items':{
+'align-items':{//checked
     alias:'ai',
     type:'s',
     compiler:'',
     values:['normal:n','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
 },
-'align-self':{
+'align-self':{//checked
     alias:'as',
     type:'s',
     compiler:'',
     values:['auto:a','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
 },
-'all':{//  comes under global static definition
+'all':{// checked // comes under global static definition applied to all property like [unset, initial]
     alias:'',
     type:'s',
     compiler:'',
     values:[],
 },
-'animation':{
+'animation':{//just support a--var--name or animation--var--name// need work
     alias:'a',
     type:'d',
     compiler:'',
     values:[],
 },
-'animation-delay':{
+'animation-delay':{//checked
     alias:'adl',
     type:'dynamic',
     compiler:lenNumPer,
     values:[],
 },
-'animation-direction':{
+'animation-direction':{//checked
     alias:'ad',
     type:'s',
     compiler:'',
     values:['normal:n','reverse:r','alternate:a','alternate-reverse:ar'],
 },
-'animation-duration':{
+'animation-duration':{//checked
     alias:'adu',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'animation-fill-mode':{
+'animation-fill-mode':{//checked
     alias:'afm',
     type:'s',
     compiler:'',
     values:['none:n','forwards:f','backwards:b','both:bo:b2'],
 },
-'animation-iteration-count':{
+'animation-iteration-count':{//checked  aic-i not align-item:center !important
     alias:'aic',
     type:'d',
-    compiler:$c.number,
+    compiler:(value:string)=>value.replace(/[d]/, '.').replace('-',""),
     values:['infinite:i'],
 },
-'animation-name':{
+'animation-name':{//checked
     alias:'an',
     type:'d',
     compiler:$c.string,
     values:['none:n'],
 },
-'animation-play-state':{
+'animation-play-state':{//checked
     alias:'aps',
     type:'s',
     compiler:'',
     values:['paused:p','running:r'],
 },
-'animation-timing-function':{
+'animation-timing-function':{ //checked // accepts-multiple-value
     alias:'atf',
     type:'d',
     compiler:$c.timingFunction,
     values:['linear:l','ease:e','ease-in:ei','ease-out:eo','ease-in-out:eio','step-start:ss','step-end:se'],
 },
-'aspect-ratio':{
+'aspect-ratio':{//checked// values example 1, 1 /1, auto, auto 1/4, 1/5 auto
     alias:'ar',
     type:'d',
-    compiler:(value:string)=>value.replace(/^-/,'').replace(/(-by-)/,'/').replace(/([\d])d([\d])/g,'$1.$2'),
+    compiler:(value:string)=>value.replace(/^-/,'').replace(/(-by-)/,'/').replace(/([\d])d([\d])/g,'$1.$2').replace("-"," "),
     values:[],
+},
+'appearance':{//checked // need update 
+    alias:'ap',
+    type:'s',
+    compiler:'',
+    values:['none:n','auto:a','menulist-button:mb','textfield:t:tf'],
 },
 
 //  ----------B--------'
@@ -2149,7 +2155,7 @@ const cssProps:{
 'translate':{
     alias:'',
     type:'d',
-    compiler:lenNumPer,
+    compiler:signedLenNumPer,
     values:['none:n'],
 },
 
