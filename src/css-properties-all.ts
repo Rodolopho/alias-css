@@ -149,23 +149,23 @@ const cssProps:{
     alias:'ap',
     type:'s',
     compiler:'',
-    values:['none:n','auto:a','menulist-button:mb','textfield:t:tf'],
+    values:['none:n','a uto:a','menulist-button:mb','textfield:t:tf'],
 },
 
 //  ----------B--------'
-'backdrop-filter':{
+'backdrop-filter':{//checked
     alias:'bf',
     type:'d',
     compiler:$c.filter,
     values:['none:n'],
 },
-'backface-visibility':{
+'backface-visibility':{//checked
     alias:'bv',
     type:'s',
     compiler:'',
     values:['visible:v','hidden:h'],
 },
-'background':{
+'background':{//checked
     alias:'bg',
     type:'d',
     compiler:(value:string,custom:{})=>{
@@ -179,13 +179,13 @@ const cssProps:{
     },
     values:[],
 },
-'background-attachment':{
+'background-attachment':{//checked
     alias:'bga',
     type:'s',
     compiler:'',
     values:['scroll:s','fixed:f','local:l'],
 },
-'background-blend-mode':{
+'background-blend-mode':{//checked
     alias:'bgbm',
     type:'s',
     compiler:'',
@@ -223,19 +223,19 @@ const cssProps:{
     compiler:'',
     values:['padding-box:pb','border-box:bb','content-box:cb'],
 },
-'background-position':{
+'background-position':{//checked
     alias:'bgp',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'background-position-x':{
+'background-position-x':{//checked
     alias:'bgpx',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'background-position-y':{
+'background-position-y':{//checked
     alias:'bgpy',
     type:'d',
     compiler:lenNumPer,
@@ -253,13 +253,13 @@ const cssProps:{
     compiler:lenNumPer,
     values:['auto:a'],
 },
-'block-size':{
+'block-size':{//checked need update on fit-content(15px)
     alias:'',// border-spacing-bs
     type:'d',
     compiler:lenNumPer,
-    values:['auto:a'],
+    values:['auto:a','max-content:xc','min-content:mc','fit-content:fc'],
 },
-'border':{
+'border':{//checked only width-style-color format works i.e border-1px-solid-red
     alias:'b',
     type:'d',
     compiler:$c.border,
@@ -385,7 +385,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
-'border-image':{ // --
+'border-image':{ // -- need work 
     alias:'',// taken by border-inline
     type:'',
     compiler:$c.url,
@@ -681,6 +681,18 @@ const cssProps:{
     compiler:$c.color,
     values:[''],
 },
+'color-interpolation':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['auto:a','sRGB','linerRGB']
+},
+'color-scheme':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['normal:n','dark:d','light dark:light-dark:ld','only light:only-light:ol']
+},
 'column-count':{
     alias:'cc',
     type:'d',
@@ -741,6 +753,59 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
+'contain':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[]
+},
+'contain-intrinsic-block-size':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},
+'contain-intrinsic-height':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},
+'contain-intrinsic-inline-size':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},
+'contain-intrinsic-size':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},'contain-intrinsic-width':{
+    alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},
+'container':{
+     alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:['none']
+},
+'container-name':{
+     alias:'',
+    type:'d',
+    compiler:lenNumPer,
+    values:[]
+},
+'container-type':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['normal','size','inline-size']
+},
 'content':{
     alias:'cont',
     type:'d',
@@ -754,6 +819,12 @@ const cssProps:{
     values:['none'],
 },
 'counter-reset':{
+    alias:'',
+    type:'d',
+    compiler:(value:string)=>value.replace(/-([-]?[\d])$/,' $1'),
+    values:['none:n'],
+},
+'counter-set':{
     alias:'',
     type:'d',
     compiler:(value:string)=>value.replace(/-([-]?[\d])$/,' $1'),
@@ -796,6 +867,12 @@ const cssProps:{
 },
 
 // ----------F--------
+'field-sizing':{
+    alias:'',
+    type:'s',
+    compiler:'',
+    values:['content:c','fixed:f'],
+},
 'filter':{
     alias:'',
     type:'d',
@@ -850,12 +927,12 @@ const cssProps:{
     compiler:'',
     values:['none:n','left:l','right:r',''],
 },
-//  'font':{// --
-//      alias:'',
-//      type:'d',
-//      compiler:'',
-//      values:[''],
-//  },
+ 'font':{// --
+     alias:'',
+     type:'d',
+     compiler:lenNumPer,
+     values:[''],
+ },
 
 'font-family':{
     alias:'ff',
@@ -908,11 +985,11 @@ const cssProps:{
 },
 'font-synthesis':{// --need work
     alias:'',
-    type:'s',
-    compiler:'',
+    type:'d',
+    compiler:lenNumPer,
     values:['none:n','weight:w',],
 },
-'font-variant':{
+'font-variant':{//--need work
     alias:'fv',
     type:'s',
     compiler:'',
@@ -975,7 +1052,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
-'grid':{
+'grid':{//---need work
     alias:'',
     type:'d',
     compiler:lenByNumPer,
@@ -1145,17 +1222,17 @@ const cssProps:{
 },
 
 // ----------I--------
-'image-rendering':{
-    alias:'ir',
-    type:'s',
-    compiler:'',
-    values:['auto:a','crisp-edges:ce','pixelated:p'],
-},
 'image-orientation':{
     alias:'io',
     type:'s',
     compiler:'',
     values:['none:n','from-image:fi'],
+},
+'image-rendering':{
+    alias:'ir',
+    type:'s',
+    compiler:'',
+    values:['auto:a','crisp-edges:ce','pixelated:p'],
 },
 'inline-size':{
     alias:'is',
@@ -1521,6 +1598,12 @@ const cssProps:{
     compiler:$c.clipPath,
     values:[''],
 },
+'offset-position':{
+    alias:'ofpos',
+    type:'d',
+    compiler:lenNumPer,
+    values:[''],
+},
 'offset-rotate':{
     alias:'ofr',
     type:'d',
@@ -1703,6 +1786,13 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
+'page':{
+    alias:'pg',
+    type:'d',
+    compiler:lenNumPer,
+    values:[]
+},
+
 'page-break-after':{
     alias:'pba',
     type:'s',
@@ -1778,13 +1868,19 @@ const cssProps:{
     compiler:'',
     values:['static:st:s2','absolute:a','fixed:f','relative:r','sticky:s'],
 },
+'print-color-adjustment':{
+    alias:'pca',
+    type:'s',
+    compiler:'',
+    values:['economy:e','exact:ex'],
+},
 
 // ----------Q--------
 'quotes':{// --
     alias:'q',
     type:'',
     compiler:'',
-    values:[''],
+    values:['none:n','auto:a'],
 },
 
 // ----------R--------
@@ -1977,7 +2073,19 @@ const cssProps:{
     values:['x','y','block:b','inline:i','both:bo:b2'],
 },
 'scrollbar-color':{
-    alias:'sc',
+    alias:'sbc',
+    type:'d',
+    compiler:$c.color,
+    values:[''],
+},
+'scrollbar-gutter':{
+    alias:'sbg',
+    type:'d',
+    compiler:'',
+    values:['auto:a','stable:s','stable both-edges:stable-both-edges:sbe'],
+},
+'scrollbar-width':{
+    alias:'sbw',
     type:'d',
     compiler:$c.color,
     values:[''],

@@ -17,13 +17,14 @@ function extractValue(each: string, custom: Custom) {
   const extractFnV = each.split(/^[-]?([a-zA-Z-]+)/);
   let f = extractFnV[1];
   const v = extractFnV[2];
+  if (f.match(/drop-shadow|ds/)) {
+    return func[f.replace(/-$/,"")] + '(' + shadow((/-$/.test(f)?'-':'')+v, custom) + ')';
+  }
   if (/-$/.test(f)) {
     f = f.replace(/-$/, '');
     // v = '-' + v;// --------------------------no negative value accepted
   }
-  if (f.match(/drop-shadow|ds/)) {
-    return func[f] + '(' + shadow(v, custom) + ')';
-  }
+  
 
   if (func.hasOwnProperty(f)) {
     const fn = func[f];
