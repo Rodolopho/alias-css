@@ -1,6 +1,7 @@
 // import pseudoSelector from './selector.js'
 import pseudoSelector from './pseudoSelector.js'
 import elementSelector from './element.js'
+import attribute from './attributeSelector.js';
 
     export default function(className:string){
         let workingClassName=className;
@@ -15,6 +16,11 @@ import elementSelector from './element.js'
 
             }else if(elementSelector.test.test(workingClassName)){
                 const [replacedClassName, selector]=elementSelector.process(workingClassName);
+                result += selector;
+                workingClassName=replacedClassName;
+                match=true;
+            }else if(attribute.test.test(workingClassName)){
+                const [replacedClassName, selector]=attribute.process(workingClassName);
                 result += selector;
                 workingClassName=replacedClassName;
                 match=true;

@@ -19,8 +19,8 @@ export default function timingFunction(data: string, custom: { [key: string]: { 
 };
 
         let result:string='';
-        let test1=/(cubic-bezier|cb)(([-_][01][d]?[0-9]?){4})/;
-        let test2=/(steps|s)[-_]([0-9]+)[-]((jump)?[-]?(start|end|none|both))/;
+        const test1=/(cubic-bezier|cb)(([-_][01][d]?[0-9]?){4})/;
+        const test2=/(steps|s)[-_]([0-9]+)[-]((jump)?[-]?(start|end|none|both))/;
         data.split('--').forEach((e)=>{
             if(test1.test(e)){
                 result= result+ e.replace(test1,(e,f,g)=>f+"("+g.replace(/-/,"").replace(/-/g,", ").replace(/d/g,".")+")") +", ";

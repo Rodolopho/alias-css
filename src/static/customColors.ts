@@ -10,6 +10,20 @@ export const customColors: { [key: string]: string } = {
   gray700: '#344054',
   gray800: '#1D2939',
   gray900: '#101828',
+  gray950: '#0C111D',
+
+  grayDark25: '#FAFAFA',
+  grayDark50: '#F5F5F5',
+  grayDark100: '#F0F1F1',
+  grayDark200: '#ECECED',
+  grayDark300: '#CECFD2',
+  grayDark400: '#94969C',
+  grayDark500: '#85888E',
+  grayDark600: '#61646C',
+  grayDark700: '#333741',
+  grayDark800: '#1F242F',
+  grayDark900: '#161B26',
+  grayDark950: '#0C111D',
 
   primary25: '#FCFAFF',
   primary50: '#F9F5FF',
@@ -22,6 +36,20 @@ export const customColors: { [key: string]: string } = {
   primary700: '#6941C6',
   primary800: '#53389E',
   primary900: '#42307D',
+  primary950: '#2C1C5F',
+
+  brand25: '#FCFAFF',
+  brand50: '#F9F5FF',
+  brand100: '#F4EBFF',
+  brand200: '#E9D7FE',
+  brand300: '#D6BBFB',
+  brand400: '#B692F6',
+  brand500: '#9E77ED',
+  brand600: '#7F56D9',
+  brand700: '#6941C6',
+  brand800: '#53389E',
+  brand900: '#42307D',
+  brand950: '#2C1C5F',
 
   error25: '#FFFBFA',
   error50: '#FEF3F2',
@@ -34,6 +62,7 @@ export const customColors: { [key: string]: string } = {
   error700: '#B42318',
   error800: '#912018',
   error900: '#7A271A',
+  error950: '#55160C',
 
   warning25: '#FFFCF5',
   warning50: '#FFFAEB',
@@ -46,18 +75,20 @@ export const customColors: { [key: string]: string } = {
   warning700: '#B54708',
   warning800: '#93370D',
   warning900: '#7A2E0E',
+  warning950: '#4E1D09',
 
   success25: '#F6FEF9',
   success50: '#ECFDF3',
-  success100: '#D1FADF',
-  success200: '#A6F4C5',
-  success300: '#6CE9A6',
-  success400: '#32D583',
-  success500: '#12B76A',
-  success600: '#039855',
-  success700: '#027A48',
-  success800: '#05603A',
-  success900: '#054F31',
+  success100: '#DCFAE6',
+  success200: '#ABEFC6',
+  success300: '#75E0A7',
+  success400: '#47CD89',
+  success500: '#17B26A',
+  success600: '#079455',
+  success700: '#067647',
+  success800: '#085D3A',
+  success900: '#074D31',
+  success950: '#053321',
   // ------------------------------------------------********
 
   // SECONDARY-COLORS
@@ -73,6 +104,7 @@ export const customColors: { [key: string]: string } = {
   grayBlue700: '#363F72',
   grayBlue800: '#293056',
   grayBlue900: '#101323',
+  grayBlue950: '#0D0F1C',
 
   grayCool25: '#FCFCFD',
   grayCool50: '#F9F9FB',
@@ -85,6 +117,7 @@ export const customColors: { [key: string]: string } = {
   grayCool700: '#404968',
   grayCool800: '#30374F',
   grayCool900: '#111322',
+  grayCool950: '#0E101B',
 
   grayModern25: '#FCFCFD',
   grayModern50: '#F8FAFC',
@@ -97,6 +130,7 @@ export const customColors: { [key: string]: string } = {
   grayModern700: '#364152',
   grayModern800: '#202939',
   grayModern900: '#121926',
+  grayModern950: '#0D121C',
 
   grayNeutral25: '#FCFCFD',
   grayNeutral50: '#F9FAFB',
@@ -109,6 +143,7 @@ export const customColors: { [key: string]: string } = {
   grayNeutral700: '#384250',
   grayNeutral800: '#1F2A37',
   grayNeutral900: '#111927',
+  grayNeutral950: '#0D121C',
 
   grayIron25: '#FCFCFC',
   grayIron50: '#FAFAFA',
@@ -120,7 +155,8 @@ export const customColors: { [key: string]: string } = {
   grayIron600: '#51525C',
   grayIron700: '#3F3F46',
   grayIron800: '#26272B',
-  grayIron900: '#18181B',
+  grayIron900: '#1A1A1E',
+  grayIron950: '#131316',
 
   grayTrue25: '#FCFCFC',
   grayTrue50: '#FAFAFA',
@@ -133,6 +169,7 @@ export const customColors: { [key: string]: string } = {
   grayTrue700: '#424242',
   grayTrue800: '#292929',
   grayTrue900: '#141414',
+  grayTrue950: '#0F0F0F',
 
   grayWarm25: '#FDFDFC',
   grayWarm50: '#FAFAF9',
@@ -141,10 +178,11 @@ export const customColors: { [key: string]: string } = {
   grayWarm300: '#D7D3D0',
   grayWarm400: '#A9A29D',
   grayWarm500: '#79716B',
-  grayWarm600: '#79716B',
-  grayWarm700: '#57534E',
-  grayWarm800: '#44403C',
-  grayWarm900: '#292524',
+  grayWarm600: '#57534E',
+  grayWarm700: '#44403C',
+  grayWarm800: '#292524',
+  grayWarm900: '#1C1917',
+  grayWarm950: '#171412',
 
   moss25: '#FAFDF7',
   moss50: '#F5FBEE',
@@ -157,6 +195,7 @@ export const customColors: { [key: string]: string } = {
   moss700: '#3F621A',
   moss800: '#335015',
   moss900: '#2B4212',
+  moss950: '#1A280B',
 
   greenLight25: '#FAFEF5',
   greenLight50: '#F3FEE7',
@@ -169,6 +208,7 @@ export const customColors: { [key: string]: string } = {
   greenLight700: '#3B7C0F',
   greenLight800: '#326212',
   greenLight900: '#2B5314',
+  greenLight950: '#15290A',
 
   green25: '#F6FEF9',
   green50: '#EDFCF2',
@@ -181,6 +221,7 @@ export const customColors: { [key: string]: string } = {
   green700: '#087443',
   green800: '#095C37',
   green900: '#084C2E',
+  green950: '#052E1C',
 
   teal25: '#F6FEFC',
   teal50: '#F0FDF9',
@@ -193,6 +234,7 @@ export const customColors: { [key: string]: string } = {
   teal700: '#107569',
   teal800: '#125D56',
   teal900: '#134E48',
+  teal950: '#0A2926',
 
   cyan25: '#F5FEFF',
   cyan50: '#ECFDFF',
@@ -205,6 +247,7 @@ export const customColors: { [key: string]: string } = {
   cyan700: '#0E7090',
   cyan800: '#155B75',
   cyan900: '#164C63',
+  cyan950: '#0D2D3A',
 
   blueLight25: '#F5FBFF',
   blueLight50: '#F0F9FF',
@@ -217,6 +260,7 @@ export const customColors: { [key: string]: string } = {
   blueLight700: '#026AA2',
   blueLight800: '#065986',
   blueLight900: '#0B4A6F',
+  blueLight950: '#062C41',
 
   blue25: '#F5FAFF',
   blue50: '#EFF8FF',
@@ -229,6 +273,7 @@ export const customColors: { [key: string]: string } = {
   blue700: '#175CD3',
   blue800: '#1849A9',
   blue900: '#194185',
+  blue950: '#102A56',
 
   blueDark25: '#F5F8FF',
   blueDark50: '#EFF4FF',
@@ -241,6 +286,7 @@ export const customColors: { [key: string]: string } = {
   blueDark700: '#004EEB',
   blueDark800: '#0040C1',
   blueDark900: '#00359E',
+  blueDark950: '#002266',
 
   indigo25: '#F5F8FF',
   indigo50: '#EEF4FF',
@@ -253,6 +299,7 @@ export const customColors: { [key: string]: string } = {
   indigo700: '#3538CD',
   indigo800: '#2D31A6',
   indigo900: '#2D3282',
+  indigo950: '#1F235B',
 
   violet25: '#FBFAFF',
   violet50: '#F5F3FF',
@@ -265,6 +312,7 @@ export const customColors: { [key: string]: string } = {
   violet700: '#6927DA',
   violet800: '#5720B7',
   violet900: '#491C96',
+  violet950: '#2E125E',
 
   purple25: '#FAFAFF',
   purple50: '#F4F3FF',
@@ -277,6 +325,7 @@ export const customColors: { [key: string]: string } = {
   purple700: '#5925DC',
   purple800: '#4A1FB8',
   purple900: '#3E1C96',
+  purple950: '#21115F',
 
   fuchsia25: '#FEFAFF',
   fuchsia50: '#FDF4FF',
@@ -289,6 +338,7 @@ export const customColors: { [key: string]: string } = {
   fuchsia700: '#9F1AB1',
   fuchsia800: '#821890',
   fuchsia900: '#6F1877',
+  fuchsia950: '#47104C',
 
   pink25: '#FEF6FB',
   pink50: '#FDF2FA',
@@ -301,6 +351,7 @@ export const customColors: { [key: string]: string } = {
   pink700: '#C11574',
   pink800: '#9E165F',
   pink900: '#851651',
+  pink950: '#4E0D30',
 
   rose25: '#FFF5F6',
   rose50: '#FFF1F3',
@@ -313,6 +364,7 @@ export const customColors: { [key: string]: string } = {
   rose700: '#C01048',
   rose800: '#A11043',
   rose900: '#89123E',
+  rose950: '#510B24',
 
   orangeDark25: '#FFF9F5',
   orangeDark50: '#FFF4ED',
@@ -325,6 +377,7 @@ export const customColors: { [key: string]: string } = {
   orangeDark700: '#BC1B06',
   orangeDark800: '#97180C',
   orangeDark900: '#771A0D',
+  orangeDark950: '#57130A',
 
   orange25: '#FEFAF5',
   orange50: '#FEF6EE',
@@ -337,6 +390,7 @@ export const customColors: { [key: string]: string } = {
   orange700: '#B93815',
   orange800: '#932F19',
   orange900: '#772917',
+  orange950: '#511C10',
 
   yellow25: '#FEFDF0',
   yellow50: '#FEFBE8',
@@ -349,6 +403,7 @@ export const customColors: { [key: string]: string } = {
   yellow700: '#A15C07',
   yellow800: '#854A0E',
   yellow900: '#713B12',
+  yellow950: '#542C0D',
 
   // "gray-25":"#FCFCFD",
   // "gray-50":"#F9FAFB",

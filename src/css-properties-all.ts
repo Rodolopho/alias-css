@@ -55,25 +55,25 @@ const cssProps:{
     values:[],
 }, 
 //  ----------xc-end
-'accent-color':{//no alias, checked
+'accent-color':{// no alias, checked
     alias:'',
     type:'d',
     compiler:$c.color,
     values:[],
 },
-'align-content':{ //checked
+'align-content':{ // checked
     alias:'ac',
     type:'s',
     compiler:'',
     values:['stretch:s','center:c','flex-start:fs','flex-end:fe','space-between:sb','space-around:sa','space-evenly:se'],
 },
-'align-items':{//checked
+'align-items':{// checked
     alias:'ai',
     type:'s',
     compiler:'',
     values:['normal:n','stretch:s','center:c','flex-start:fs','flex-end:fe','baseline:b'],
 },
-'align-self':{//checked
+'align-self':{// checked
     alias:'as',
     type:'s',
     compiler:'',
@@ -85,67 +85,67 @@ const cssProps:{
     compiler:'',
     values:[],
 },
-'animation':{//just support a--var--name or animation--var--name// need work
+'animation':{// just support a--var--name or animation--var--name// need work
     alias:'a',
     type:'d',
     compiler:'',
     values:[],
 },
-'animation-delay':{//checked
+'animation-delay':{// checked
     alias:'adl',
     type:'dynamic',
     compiler:lenNumPer,
     values:[],
 },
-'animation-direction':{//checked
+'animation-direction':{// checked
     alias:'ad',
     type:'s',
     compiler:'',
     values:['normal:n','reverse:r','alternate:a','alternate-reverse:ar'],
 },
-'animation-duration':{//checked
+'animation-duration':{// checked
     alias:'adu',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'animation-fill-mode':{//checked
+'animation-fill-mode':{// checked
     alias:'afm',
     type:'s',
     compiler:'',
     values:['none:n','forwards:f','backwards:b','both:bo:b2'],
 },
-'animation-iteration-count':{//checked  aic-i not align-item:center !important
+'animation-iteration-count':{// checked  aic-i not align-item:center !important
     alias:'aic',
     type:'d',
     compiler:(value:string)=>value.replace(/[d]/, '.').replace('-',""),
     values:['infinite:i'],
 },
-'animation-name':{//checked
+'animation-name':{// checked
     alias:'an',
     type:'d',
     compiler:$c.string,
     values:['none:n'],
 },
-'animation-play-state':{//checked
+'animation-play-state':{// checked
     alias:'aps',
     type:'s',
     compiler:'',
     values:['paused:p','running:r'],
 },
-'animation-timing-function':{ //checked // accepts-multiple-value
+'animation-timing-function':{ // checked // accepts-multiple-value
     alias:'atf',
     type:'d',
     compiler:$c.timingFunction,
     values:['linear:l','ease:e','ease-in:ei','ease-out:eo','ease-in-out:eio','step-start:ss','step-end:se'],
 },
-'aspect-ratio':{//checked// values example 1, 1 /1, auto, auto 1/4, 1/5 auto
+'aspect-ratio':{// checked// values example 1, 1 /1, auto, auto 1/4, 1/5 auto
     alias:'ar',
     type:'d',
     compiler:(value:string)=>value.replace(/^-/,'').replace(/(-by-)/,'/').replace(/([\d])d([\d])/g,'$1.$2').replace("-"," "),
     values:[],
 },
-'appearance':{//checked // need update 
+'appearance':{// checked // need update 
     alias:'ap',
     type:'s',
     compiler:'',
@@ -153,19 +153,19 @@ const cssProps:{
 },
 
 //  ----------B--------'
-'backdrop-filter':{//checked
+'backdrop-filter':{// checked
     alias:'bf',
     type:'d',
     compiler:$c.filter,
     values:['none:n'],
 },
-'backface-visibility':{//checked
+'backface-visibility':{// checked
     alias:'bv',
     type:'s',
     compiler:'',
     values:['visible:v','hidden:h'],
 },
-'background':{//checked
+'background':{// checked
     alias:'bg',
     type:'d',
     compiler:(value:string,custom:{})=>{
@@ -179,13 +179,13 @@ const cssProps:{
     },
     values:[],
 },
-'background-attachment':{//checked
+'background-attachment':{// checked
     alias:'bga',
     type:'s',
     compiler:'',
     values:['scroll:s','fixed:f','local:l'],
 },
-'background-blend-mode':{//checked
+'background-blend-mode':{// checked
     alias:'bgbm',
     type:'s',
     compiler:'',
@@ -223,19 +223,19 @@ const cssProps:{
     compiler:'',
     values:['padding-box:pb','border-box:bb','content-box:cb'],
 },
-'background-position':{//checked
+'background-position':{// checked
     alias:'bgp',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'background-position-x':{//checked
+'background-position-x':{// checked
     alias:'bgpx',
     type:'d',
     compiler:lenNumPer,
     values:[''],
 },
-'background-position-y':{//checked
+'background-position-y':{// checked
     alias:'bgpy',
     type:'d',
     compiler:lenNumPer,
@@ -253,13 +253,13 @@ const cssProps:{
     compiler:lenNumPer,
     values:['auto:a'],
 },
-'block-size':{//checked need update on fit-content(15px)
+'block-size':{// checked need update on fit-content(15px)
     alias:'',// border-spacing-bs
     type:'d',
     compiler:lenNumPer,
     values:['auto:a','max-content:xc','min-content:mc','fit-content:fc'],
 },
-'border':{//checked only width-style-color format works i.e border-1px-solid-red
+'border':{// checked only width-style-color format works i.e border-1px-solid-red
     alias:'b',
     type:'d',
     compiler:$c.border,
@@ -989,7 +989,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:['none:n','weight:w',],
 },
-'font-variant':{//--need work
+'font-variant':{// --need work
     alias:'fv',
     type:'s',
     compiler:'',
@@ -1052,7 +1052,7 @@ const cssProps:{
     compiler:lenNumPer,
     values:[''],
 },
-'grid':{//---need work
+'grid':{// ---need work
     alias:'',
     type:'d',
     compiler:lenByNumPer,

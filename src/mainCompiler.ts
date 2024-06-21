@@ -15,6 +15,7 @@ import {customColors} from './static/customColors.js'
 export const compiler:{[key:string]:any}={
     cache:{propertyAndValue:{...customStaticClassNames}},
     custom:{...{color:customColors}},
+    mediaSelector,
     staticClassNames:{...staticClassNamesAlias,...helper().generateStaticClassNames(cssProperties,config['css-global-values'])},
     cssProps:{...helper().makeAliasProperties(cssProperties),...cssProperties},
 
@@ -25,12 +26,12 @@ export const compiler:{[key:string]:any}={
     },
 
     make(className:string,as?:string, bool?:boolean){
-        let [media, elementAndPseudo,important,workingClassName]=['','','',className]
+        let [media, elementAndPseudo,important,workingClassName]=['','','',className.replace(/[_][\.]([a-zA-Z])/g,(s,e)=>"_"+e.toUpperCase()).replace(/[.]/g,"d").replace(/[%]/g,'p')]
         // First Check if its has media
-        const [mediaProperty] :any =className.match(mediaSelector.test)?className.match(mediaSelector.test):[null];
+        const [mediaProperty] :any =workingClassName.match(this.mediaSelector.test)?workingClassName.match(this.mediaSelector.test):[null];
         if(mediaProperty){
-            media=mediaSelector.target[mediaProperty];
-            workingClassName=className.replace(mediaProperty,'');
+            media=this.mediaSelector.target[mediaProperty];
+            workingClassName=workingClassName.replace(mediaProperty,'');
         }
         
         // process --important flag
@@ -68,6 +69,7 @@ export const compiler:{[key:string]:any}={
             
         }
         if(result){
+            className=className.replace(/([.%=\]\[@~:*#\(\)\/^])/g,'\\$1').replace(/([%])/g,'\\$1');
             if(bool===true) return result;
             this.cache.propertyAndValue[pnv]=result;
             if(media){
@@ -159,8 +161,22 @@ addCustom(name: string, obj: { [key: string]: string }) {
       }
     }
   },
+addMedia(obj:{['test']?:RegExp,prefix:{[key:string]:string}}){
+    if(obj.hasOwnProperty('test')){
+        this.mediaSelector.test=test;
+    }
+    if(obj.hasOwnProperty('prefix')){
+        for(const key in obj.prefix){
+            if(obj.prefix.hasOwnProperty(key)){
+                this.mediaSelector.target[key]=obj.prefix[key];
+            }
+            
+        }
+    }
 
 }
+};
+
 // ----------------------------------Extras
 
 type Property = {

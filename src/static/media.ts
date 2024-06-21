@@ -14,12 +14,14 @@ const  media :{
         lg: '@media (min-width : 992px)',
         xl: '@media (min-width : 1200px)',
         xxl: '@media (min-width : 1408px)',
+        '2xl': '@media (min-width : 1408px)',
         '-xs': '@media (min-width : 576px)',
         '-sm': '@media (max-width : 576px)',
         '-md': '@media (max-width : 768px)',
         '-lg': '@media (max-width : 992px)',
         '-xl': '@media (max-width : 1200px)',
         '-xxl': '@media (max-width : 1408px)',
+        '-2xl': '@media (max-width : 1408px)',
     },
 
 }

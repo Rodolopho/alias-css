@@ -22,13 +22,13 @@ const AliasCSS: Index = {
   customStatement: '',
   useFilename:'',
   compileFileByFile: false,
- 
+ // -----------input--------------------
   config(configFile: { [key: string]: any }) {
     if (configFile.hasOwnProperty('input')) {
       this.input = configFile.input;
       this.globPattern=configFile.input;
     }
-
+    // ---------Extend----------------
     if(configFile.hasOwnProperty('extend') && typeof configFile.extend === 'object'){
 
       const filteredObj:{[key:string]:{}}={};
@@ -41,11 +41,11 @@ const AliasCSS: Index = {
       statementMaker.extend(filteredObj);
       
     }
-
+// -----------------useColon----------------------------
     if(configFile.hasOwnProperty('useColon')){
         this.useColon=configFile.useColon;
     }
-
+// ----------------output-------------------
     if (configFile.hasOwnProperty('output')) {
       const op=configFile.output;
       if(op.hasOwnProperty('location')){
@@ -55,6 +55,10 @@ const AliasCSS: Index = {
         this.compileFileByFile=true;
       }
       
+    }
+    // ---------------addMedia----------------
+    if (configFile.hasOwnProperty('media') && typeof configFile.media === 'object') {
+      this.statementMaker.addMedia(configFile.media);
     }
     //  /Truncate File every time we bundle
     if (configFile.hasOwnProperty('truncate') && configFile.truncate === false) {
@@ -186,7 +190,7 @@ const AliasCSS: Index = {
     let globalStatement = '';
     const [classList, groups,keyframe] = this.extractClassName(file);
 
-    //Process ClassList
+    // Process ClassList
     if (classList.length) {
       //  compileStatement=`\n/* AliasCSS : These are classnames compiled  from ${path.basename(file)}*/\n\n`,
       classList.forEach((e: string) => {
@@ -202,7 +206,7 @@ const AliasCSS: Index = {
         }
       });
     }
-    //Process Groups
+    // Process Groups
     for (const key in groups) {
       if(groups.hasOwnProperty(key)){
         const gpStatement = this.statementMaker.group(groups[key], key);
@@ -214,7 +218,7 @@ const AliasCSS: Index = {
       }
     }
 
-    //Process Keyframes
+    // Process Keyframes
       // Keyframes
       for (const key in keyframe) {
       if (keyframe.hasOwnProperty(key)) {
@@ -222,9 +226,9 @@ const AliasCSS: Index = {
         const split=keyframe[key].split(/\s+/);
         split.forEach((each:string) => {
           
-          //case 1-> @100-acss
-          //case 2->@10:20:30-acss
-          //case 3->@[10,20,30]-acss
+          // case 1-> @100-acss
+          // case 2->@10:20:30-acss
+          // case 3->@[10,20,30]-acss
           try {
             const[at,pNv]=each.replace("-","=").split("=");
             kfStatement+=` ${at.replace('@','').replace(/:/g,',').replace(/,/g,"%,").replace(/[\[|\]]/g,'')}% {${this.statementMaker.make(pNv,null,true)}}`    

@@ -4,8 +4,13 @@ export  const config={
         location:'public/style/acss.css',
         "--file":true
     },
+    media:{
+        prefix:{
+            xs:'@media (max-width : 24px)'
+        }
+    },
     extend:{
-        'test':{
+        'txt-shadow':{
             property:'--webkit-text-shadow',
             compiler:(value)=>value
         },
@@ -37,12 +42,7 @@ export  const config={
          
         }
     },
-    statement:`
-        body{
-            background:olive;
-        }
-    `,
-    
+    //statement:``,
     custom:{
         color:{
             white:'#e3e3e3',
@@ -51,7 +51,7 @@ export  const config={
         }
     },
     prebuild:{
-        'bg-reddish':'background:red',
+        'bg-dark':'background:#0f0f0f',
         'flex-center':'display:flex;align-items:center;justify-content:center',
     }
 
