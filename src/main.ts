@@ -96,8 +96,8 @@ const AliasCSS: Index = {
   },
 
   // extract class="dn fs12pc" and class-group="df fs12px" acss-group or className=""
-  matchRegExp:/(?:(class|className|class[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExp:/(?:(class|className|class[-_][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
 
   matchRegExpKeyFrame:/[\s](?:(keyframes[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
   matchRegExpWithColonKeyFrame:/[\s](?:(keyframes[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
@@ -131,16 +131,23 @@ const AliasCSS: Index = {
 
             // case one if its just class-group
             if(extraction[1].match(/class[:_-]/)){
-                const group=extraction[1].replace(/class[:_-]/,'');
+                let group=extraction[1].replace(/class[:_-]/,'');
+                let classExtracted=extraction[2];
                 if (group) {
+                  const match=group.match(/\[(.)+\]/);
+                  if(match){
+                    group=group.replace(match[0],'');
+                    classExtracted=classExtracted.trim().split(/\s+/).map(e=>match[0].replace(/^\[/,'').replace(/\]$/,'')+(/^[_-]/.test(e)?'':'-')+e).join(" ");  
+                  }
+                  // if(group.match())
                     // if group already exists
                     // if (groups.hasOwnProperty(group) && groups[group] === extraction[2]) {
                     if (groups.hasOwnProperty(group)){
-                       groups[group] = groups[group] +" "+ extraction[2];
+                       groups[group] = groups[group] +" "+ classExtracted;
                     }
                     else {
                         // new group
-                        groups[group] = extraction[2].trim().replace(/[\s]+/," ");
+                        groups[group] = classExtracted.trim().replace(/[\s]+/," ");
                           }
 
                   }
@@ -161,7 +168,7 @@ const AliasCSS: Index = {
             const extraction = match.match(matchRegExpKeyFrame);
             if(!extraction) return;
 
-            // case one if its just class-group
+            // case one if its just keyframes
             if(extraction[1].match(/keyframes[:_-]/)){
                 const name=extraction[1].replace(/keyframes[:_-]/,'');
                 if (name) {

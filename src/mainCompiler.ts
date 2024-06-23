@@ -69,7 +69,7 @@ export const compiler:{[key:string]:any}={
             
         }
         if(result){
-            className=className.replace(/([.%=\]\[@~:*#\(\)\/^])/g,'\\$1').replace(/([%])/g,'\\$1');
+            className=className.replace(/([.%=\]\[@~:*#\(\)\/^])/g,'\\$1');
             if(bool===true) return result;
             this.cache.propertyAndValue[pnv]=result;
             if(media){
