@@ -26,7 +26,8 @@ const AliasCSS: Index = {
 
   matchExtractorFunction:null,
 
-  createExtractorRegex:(fname:string)=>new RegExp(fname + "[\\s*]?(`|\\(["+`"'])`+ "(.+)" + "(`|" + `["']` + "\\))"),
+  // createExtractorRegex:(fname:string)=>new RegExp(fname + "[\\s*]?(`|\\(["+`"'])`+ "(.+)" + "(`|" + `["']` + "\\))"),
+  createExtractorRegex:(fname:string)=>new RegExp(fname + "[\\s*]?(`|\\(["+`"'])`+ "([^)`]+)" + "(`|" + `["']` + "\\))"),
 
 
   matchRegExp:/(?:(class|className|class[-_][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,

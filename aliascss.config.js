@@ -4,7 +4,7 @@ export  const config={
         location:'public/style/acss.css',
         "--file":true
     },
-    extractorFunction:"x",
+    extractorFunction:"y",
     //reg:new RegExp('x' + "(`|\\(["+`"'])`+ "(.+)" + "(`|" + `["']` + "\\))") ,
     media:{
         prefix:{

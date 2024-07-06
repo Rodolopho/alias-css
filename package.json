@@ -1,6 +1,6 @@
 {
   "name": "alias-css",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "Rewrititng aliasccs in typescript",
   "main": "lib/index.js",
   "bin": "bin/aliascss.js",
