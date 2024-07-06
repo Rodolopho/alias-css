@@ -16,17 +16,35 @@ const AliasCSS: Index = {
   input: null,
   output: null,
   ignore: [],
+  useExtractorFunction:null,
   useColon:true,// class:className="valid-ACSS-class-names"
   globPattern:'',// Use this to check valid new created file to add to watch during watch.on
   customGroupStatement: '',
   customStatement: '',
   useFilename:'',
   compileFileByFile: false,
+
+  matchExtractorFunction:null,
+
+  createExtractorRegex:(fname:string)=>new RegExp(fname + "[\\s*]?(`|\\(["+`"'])`+ "(.+)" + "(`|" + `["']` + "\\))"),
+
+
+  matchRegExp:/(?:(class|className|class[-_][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+
+  matchRegExpKeyFrame:/[\s](?:(keyframes[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  matchRegExpWithColonKeyFrame:/[\s](?:(keyframes[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
  // -----------input--------------------
   config(configFile: { [key: string]: any }) {
     if (configFile.hasOwnProperty('input')) {
       this.input = configFile.input;
       this.globPattern=configFile.input;
+    }
+    // ------------Extractor function-------
+    if (configFile.hasOwnProperty('extractorFunction')) {
+      this.useExtractorFunction = configFile.extractorFunction.trim();
+      if(this.useExtractorFunction) this.matchExtractorFunction=this.createExtractorRegex(this.useExtractorFunction);
+
     }
     // ---------Extend----------------
     if(configFile.hasOwnProperty('extend') && typeof configFile.extend === 'object'){
@@ -96,11 +114,7 @@ const AliasCSS: Index = {
   },
 
   // extract class="dn fs12pc" and class-group="df fs12px" acss-group or className=""
-  matchRegExp:/(?:(class|className|class[-_][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-  matchRegExpWithColon:/(?:(class|className|class[-_:][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-
-  matchRegExpKeyFrame:/[\s](?:(keyframes[-_][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
-  matchRegExpWithColonKeyFrame:/[\s](?:(keyframes[-_:][\w-]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  
 
   // it will hold all the class name list that had been already compiled
   classList: [],
@@ -129,7 +143,7 @@ const AliasCSS: Index = {
             const extraction = match.match(matchRegExp);
             if(!extraction) return;
 
-            // case one if its just class-group
+            // case 2  if its just class-group
             if(extraction[1].match(/class[:_-]/)){
                 let group=extraction[1].replace(/class[:_-]/,'');
                 let classExtracted=extraction[2];
@@ -160,6 +174,25 @@ const AliasCSS: Index = {
                     }
                 })
               }
+              // -----------Extraction Function-------------
+              // console.log('extraction', this.useExtractorFunction)
+              const matchesEF=data.match(new RegExp(this.matchExtractorFunction,"g"))
+                if(matchesEF){
+                  matchesEF.forEach((each)=>{
+                    const extraction=each.match(this.matchExtractorFunction);
+                    if(extraction && extraction[2]){
+                      extraction[2].trim().replace(/[\s]+/," ").split(/\s+/).forEach((e) => {
+                                if (this.ignore.indexOf(e) === -1 && classList.indexOf(e) === -1) {
+                                    classList.push(e);
+                                }
+                            });
+
+                    }
+                  })
+                }
+
+
+              // ----------End-Extraction Function-------------
                 // /---------keyframes
               const matchesKF= data.match(new RegExp(matchRegExpKeyFrame,"g"));
             if(matchesKF===null)return [classList, groups,keyframe]

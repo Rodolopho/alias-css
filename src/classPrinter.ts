@@ -54,13 +54,29 @@ export let classPrinter: ClassPrinter = {
     if (el.getAttribute('acss-class')) attrValue += ' ' + el.getAttribute('acss-class');
     // new Update
     [...el.attributes].map((each)=>{
-           if( testRegExp.test(each.name)){
-              const result = statementMaker.group(each.value, each.name.replace(testRegExp,''));
+      // ------------
+      if( testRegExp.test(each.name)){
+            let value=each.value;
+            let group=each.name.replace(testRegExp,'');
+            const match=group.match(/\[(.)+\]/);
+                  if(match){
+                    group=group.replace(match[0],'');
+                    value=value.trim().split(/\s+/).map(e=>match[0].replace(/^\[/,'').replace(/\]$/,'')+(/^[_-]/.test(e)?'':'-')+e).join(" ");  
+                  }
+              const result = statementMaker.group(value, group);
               if (result) {
                   this.appendToStyleTag(result);
                 //  return true;
               }
-           }  
+           }
+      // -------
+          //  if( testRegExp.test(each.name)){
+          //     const result = statementMaker.group(each.value, each.name.replace(testRegExp,''));
+          //     if (result) {
+          //         this.appendToStyleTag(result);
+          //       //  return true;
+          //     }
+          //  }  
            if( testRegExpKF.test(each.name)){
             const key=each.name.replace(testRegExpKF,'');
               let kfStatement='@keyframes '+ key +"{\n";
@@ -135,13 +151,24 @@ export let classPrinter: ClassPrinter = {
     // initialize class or acss-class value container
     let attrValue = '';
     const testRegExp=this.useColon? /class[-_:]/: /class[-_]/;
+    // matchRegExp:/(?:(class|className|class[-_][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
+  // matchRegExpWithColon:/(?:(class|className|class[-_:][\w-\[\]=_]+))=[\s*]?(?:["']\W+\s*(?:\w+)\()?["']([^'"]+)['"]/,
 
     // if class
     if (el.getAttribute('class')) attrValue += ' ' + el.getAttribute('class');
     // New update 2023-aug-03
+    
      [...el.attributes].map((each)=>{
+      
            if( testRegExp.test(each.name)){
-              const result = statementMaker.group(each.value, each.name.replace(testRegExp,''));
+            let value=each.value;
+            let group=each.name.replace(testRegExp,'');
+            const match=group.match(/\[(.)+\]/);
+                  if(match){
+                    group=group.replace(match[0],'');
+                    value=value.trim().split(/\s+/).map(e=>match[0].replace(/^\[/,'').replace(/\]$/,'')+(/^[_-]/.test(e)?'':'-')+e).join(" ");  
+                  }
+              const result = statementMaker.group(value, group);
               if (result) {
                   this.appendToStyleTag(result);
                 //  return true;

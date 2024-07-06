@@ -2,6 +2,8 @@ import pseudoAndElement from '../static/pseudoSelectorAndElement'
 
 test('attribute selector', () => {
   expect(pseudoAndElement('[data-state=open]-c-red')).toEqual(['[data-state="open"]', '-c-red']);
+  expect(pseudoAndElement('_Class-[data-state=open]-c-red')).toEqual([' .class[data-state="open"]', '-c-red']);
+  expect(pseudoAndElement('_Class-[data-state=open]-c-red')).toEqual([' .class[data-state="open"]', '-c-red']);
 });
 test('Pseudo and Element  ', () => {
   expect(pseudoAndElement('_div__p-bn')).toEqual([' div > p', '-bn']);

@@ -1,9 +1,11 @@
 export  const config={
-    input:['public/**/*.html'],
+    input:['public/demo-extraction/**/*.html'],
     output:{
         location:'public/style/acss.css',
         "--file":true
     },
+    extractorFunction:"x",
+    //reg:new RegExp('x' + "(`|\\(["+`"'])`+ "(.+)" + "(`|" + `["']` + "\\))") ,
     media:{
         prefix:{
             xs:'@media (max-width : 24px)'

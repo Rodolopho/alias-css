@@ -1,6 +1,13 @@
 import elementSelector from '../static/element'
 
 test('Element Selector  ', () => {
+  expect(elementSelector.process('__div-[data-state=open]-bn')).toEqual(['-[data-state=open]-bn',' > div']);
+});
+test('Element Selector  ', () => {
+  expect(elementSelector.process('__div[data-state=open]-bn')).toEqual(['[data-state=open]-bn',' > div']);
+});
+
+test('Element Selector  ', () => {
   expect(elementSelector.process('_div-bn')).toEqual(['-bn',' div']);
 });
 test('Element Selector  ', () => {
